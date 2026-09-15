@@ -59019,6 +59019,7 @@ let state = {
   expenseTab: EXPENSE_TYPES.PURCHASE,
   expenseDates: { purchase: todayISO(), business: todayISO(), home: todayISO() },
   adminTab: 'staff',
+  adminUnlocked: false,
   saleModalStaffId: null,
   aiDraft: '',
 };
@@ -59036,7 +59037,21 @@ const NAV_KEYS = [
 function getNavItems(){ return NAV_KEYS.map(n => ({ ...n, label: t(n.labelKey) })); }
 const NAV_ITEMS = NAV_KEYS.map(n => ({ ...n, label: n.id })); // placeholder; actual labels via getNavItems()
 
-function navigate(view){ state.view = view; render(); }
+function navigate(view){
+  if (view === 'admin' && !state.adminUnlocked){
+    requireAdmin(() => {
+      state.adminUnlocked = true;
+      state.view = 'admin';
+      render();
+    }, t('authRequired'));
+    return;
+  }
+  if (state.view === 'admin' && view !== 'admin'){
+    state.adminUnlocked = false;
+  }
+  state.view = view;
+  render();
+}
 
 /* =========================================================
    MODAL SYSTEM
@@ -60522,14 +60537,14 @@ function renderAdminStaff(root){
       </div>
     </div>
   `;
-  root.querySelector('#addStaffBtn').addEventListener('click', () => requireAdmin(openAddStaffModal, t('authRequired')));
-  root.querySelectorAll('[data-edit-staff]').forEach(b => b.addEventListener('click', ()=> requireAdmin(()=>openEditStaffModal(b.dataset.editStaff), t('authRequired'))));
-  root.querySelectorAll('[data-toggle-staff]').forEach(b => b.addEventListener('click', ()=> requireAdmin(()=>{
+  root.querySelector('#addStaffBtn').addEventListener('click', openAddStaffModal);
+  root.querySelectorAll('[data-edit-staff]').forEach(b => b.addEventListener('click', ()=> openEditStaffModal(b.dataset.editStaff)));
+  root.querySelectorAll('[data-toggle-staff]').forEach(b => b.addEventListener('click', ()=>{
     const s = getStaff(b.dataset.toggleStaff);
     setStaffActive(s.id, !s.active);
     render();
     toast(s.active ? t('adminStaffDeactivated',{name:s.name}) : t('adminStaffActivated',{name:s.name}));
-  }, t('authRequired'))));
+  }));
 }
 function openAddStaffModal(){
   openModal({
@@ -60638,13 +60653,13 @@ function renderAdminData(root){
       <div class="panel pad settings-card">
         <h3>${t('adminExportTitle')}</h3>
         <p class="desc">${t('adminExportDesc',{sales:DB.sales.length,expenses:DB.expenses.length,attendance:DB.attendance.length,creditors:DB.creditors.length})}</p>
-        <button class="btn" id="exportBtn">${icon('download')} ${t('adminExportBtn')}</button>
+        <button class="btn" id="exportBtn">${icon('upload')} ${t('adminExportBtn')}</button>
       </div>
       <div class="panel pad settings-card">
         <h3>${t('adminImportTitle')}</h3>
         <p class="desc">${t('adminImportDesc')}</p>
         <input type="file" id="importFile" accept="application/json" style="display:none;">
-        <button class="btn" id="importBtn">${icon('upload')} ${t('adminImportBtn')}</button>
+        <button class="btn" id="importBtn">${icon('download')} ${t('adminImportBtn')}</button>
       </div>
       <div class="panel pad settings-card">
         <h3>Supabase migration</h3>
