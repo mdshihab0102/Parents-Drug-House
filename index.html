@@ -331,24 +331,6 @@
   }
   .date-chip svg{width:13px;height:13px;color:var(--ink-3);}
   .content{padding:28px 32px 56px;flex:1;width:100%;max-width:var(--content-max);margin:0 auto;}
-  .pharma-news-wrap{padding:0 32px;max-width:var(--content-max);width:100%;margin:0 auto;box-sizing:border-box;overflow:hidden;}
-  .pharma-news{margin:0 0 0;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--border));background:linear-gradient(135deg,var(--surface),var(--accent-soft));border-radius:0 0 var(--r-lg) var(--r-lg);box-shadow:var(--shadow-sm);transform:translateY(-110%);opacity:0;max-height:0;transition:max-height .45s var(--ease-out),opacity .35s var(--ease-out),transform .45s var(--ease-out),margin .45s var(--ease-out);}
-  .pharma-news.show{transform:translateY(0);opacity:1;max-height:420px;margin:0 0 8px;}
-  .pharma-news-inner{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;}
-  .pharma-news-mark{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;background:var(--accent);color:#fff;box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 25%,transparent);}
-  .pharma-news-mark svg{width:17px;height:17px;}
-  .pharma-news-main{min-width:0;flex:1;}
-  .pharma-news-kicker{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);margin-bottom:3px;}
-  .pharma-news-title{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:3px;}
-  .pharma-news-body{font-size:12px;line-height:1.6;color:var(--ink-2);white-space:pre-line;}
-  .pharma-news-body a{color:var(--accent-text);font-weight:700;text-decoration:none;}
-  .pharma-news-body a:hover{text-decoration:underline;}
-  .pharma-news-sources{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px;}
-  .pharma-news-source{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:10.5px;color:var(--ink-2);text-decoration:none;}
-  .pharma-news-close{border:0;background:transparent;color:var(--ink-3);width:28px;height:28px;border-radius:8px;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
-  .pharma-news-close:hover{background:var(--surface);color:var(--ink);}
-  .pharma-news-close svg{width:15px;height:15px;}
-  @media (max-width:760px){.pharma-news-wrap{padding:0 12px}.pharma-news-inner{padding:11px}.pharma-news-body{font-size:11.5px}}
 
   /* View transition */
   .view-enter{animation:viewIn var(--t-slow) var(--ease-out) both;}
@@ -1308,6 +1290,7 @@
     .ai-typing i,.ai-caret{animation:none;}
     .ai-drawer{transition:none;}
   }
+.qe-total-preview{font-size:12px;font-weight:700;color:var(--primary,#2563eb);white-space:nowrap;min-width:110px;text-align:right;}
 </style>
 </head>
 <body>
@@ -58671,11 +58654,7 @@ async function loadAll(){
       await saveKey('settings');
     }
     normaliseLoadedData();
-    if (DB.settings && DB.settings.ai && !String(DB.settings.ai.apiKey || '').trim()){
-      DB.settings.ai.apiKey = PHARMA_NEWS_API_KEY;
-      if (DB.settings.ai.enabled === false) DB.settings.ai.enabled = true;
-      await saveKey('settings');
-    }
+    await clearPreviouslyEmbeddedAiKey();
     cacheAll();
   }catch(e){
     console.error('Supabase load failed; using local cache if present.', e);
@@ -58695,11 +58674,19 @@ function loadAllFromLocalCache(){
   if (DB.staff === null) DB.staff = demoStaff();
   if (DB.settings === null) DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
   normaliseLoadedData();
-  if (DB.settings && DB.settings.ai && !String(DB.settings.ai.apiKey || '').trim()){
-    DB.settings.ai.apiKey = PHARMA_NEWS_API_KEY;
-    if (DB.settings.ai.enabled === false) DB.settings.ai.enabled = true;
-    writeCache('settings');
+  // One-time cleanup of the previously embedded AI key is handled during the remote load path.
+}
+async function clearPreviouslyEmbeddedAiKey(){
+  const marker = 'pharmacy_ai_key_cleanup_v1';
+  try{
+    if (localStorage.getItem(marker) === '1') return;
+  }catch(e){ return; }
+  if (DB.settings && DB.settings.ai && typeof DB.settings.ai === 'object') {
+    DB.settings.ai.apiKey = '';
+    try { await saveKey('settings'); } catch(e) {}
+    try { writeCache('settings'); } catch(e) {}
   }
+  try { localStorage.setItem(marker, '1'); } catch(e) {}
 }
 function normaliseLoadedData(){
   if (!Array.isArray(DB.staff)) DB.staff = [];
@@ -59107,6 +59094,12 @@ function monthLabelLong(ym){
 /* =========================================================
    EXPENSES
 ========================================================= */
+function purchaseLineTotal(entry){
+  const qty = Number(entry && entry.quantity) || 0;
+  const unitPrice = Number(entry && entry.amount) || 0;
+  return qty > 0 ? qty * unitPrice : unitPrice;
+}
+
 function addExpense(entry){
   const exp = Object.assign({ id: uid('exp'), source:'manual', note:'' }, entry);
   DB.expenses.push(exp);
@@ -59167,7 +59160,7 @@ function dashboardStats(){
   }).length;
   const salaryToday = todaysSalaryTotal(date);
   const bizExpense = expensesForDate(date, EXPENSE_TYPES.BUSINESS).reduce((s,e)=>s + moneyValue(e.amount), 0)
-                    + expensesForDate(date, EXPENSE_TYPES.PURCHASE).reduce((s,e)=>s + moneyValue(e.amount), 0);
+                    + expensesForDate(date, EXPENSE_TYPES.PURCHASE).reduce((s,e)=>s + purchaseLineTotal(e), 0);
   const homeExpense = expensesForDate(date, EXPENSE_TYPES.HOME).reduce((s,e)=>s + moneyValue(e.amount), 0);
   return {
     date, totalSales, presentCount, activeCount: activeStaff.length,
@@ -59336,7 +59329,6 @@ function renderShell(){
           <div class="date-chip">${icon('calendar')}<span>${formatDateLong(todayISO())}</span></div>
         </div>
       </header>
-      <div class="pharma-news-wrap" id="pharmaNewsMount" aria-live="polite"></div>
       <main class="content" id="viewRoot"></main>
     </div>
     <button class="ai-fab" id="aiFab" type="button" title="${t('aiOpenAssistant')}" aria-label="${t('aiOpenAssistant')}">${icon('ai')}</button>
@@ -59387,7 +59379,7 @@ function dashboardExtra(){
   const series = [];
   for (let i=13;i>=0;i--){ const d = addDays(today,-i); series.push({ date:d, value:sumSales(d) }); }
   const ySales = sumSales(yesterday);
-  const yExp = [EXPENSE_TYPES.BUSINESS, EXPENSE_TYPES.PURCHASE].reduce((s,t)=> s + expensesForDate(yesterday,t).reduce((a,e)=>a + moneyValue(e.amount), 0), 0);
+  const yExp = [EXPENSE_TYPES.BUSINESS, EXPENSE_TYPES.PURCHASE].reduce((s,t)=> s + expensesForDate(yesterday,t).reduce((a,e)=>a + (t===EXPENSE_TYPES.PURCHASE ? purchaseLineTotal(e) : moneyValue(e.amount)), 0), 0);
   const yHome = expensesForDate(yesterday, EXPENSE_TYPES.HOME).reduce((a,e)=>a + moneyValue(e.amount), 0);
   const mSales = DB.sales.filter(s => monthKey(s.date)===ym).reduce((s,x)=>s + moneyValue(x.amount), 0);
   // Build the monthly expense mix from the same type used by each
@@ -59398,7 +59390,7 @@ function dashboardExtra(){
     .filter(predicate)
     .reduce((sum, e) => sum + moneyValue(e.amount), 0);
 
-  const purchaseTotal = sumExpenses(e => e.type === EXPENSE_TYPES.PURCHASE);
+  const purchaseTotal = mExp.filter(e => e.type === EXPENSE_TYPES.PURCHASE).reduce((sum,e) => sum + purchaseLineTotal(e), 0);
   const salaryTotal = sumExpenses(e =>
     e.type === EXPENSE_TYPES.BUSINESS && e.source === 'attendance'
   );
@@ -59685,6 +59677,7 @@ function renderSales(root){
       </div>
       <div class="sales-period-tools">
         <div class="sales-total-box"><span>${t('totalSalesLabel')}</span><b>${fmtMoney(total)}</b></div>
+        <button class="btn ghost sm" id="salesShareWhatsapp">${icon('whatsapp')} ${t('shareSalesWhatsappBtn')}</button>
         <button class="btn ghost sm" id="salesExportPdf">${icon('download')} ${t('exportPdfBtn')}</button>
         <button class="btn ghost sm" id="salesExportExcel">${icon('download')} ${t('exportExcelBtn')}</button>
       </div>
@@ -59726,6 +59719,7 @@ function renderSales(root){
   root.querySelector('#salesPrev').addEventListener('click', ()=>{ state.salesDate = addDays(state.salesDate,-1); render(); });
   root.querySelector('#salesNext').addEventListener('click', ()=>{ state.salesDate = addDays(state.salesDate,1); render(); });
   root.querySelector('#salesDateSelect').addEventListener('change', e => { state.salesDate = e.target.value; render(); });
+  root.querySelector('#salesShareWhatsapp').addEventListener('click', ()=>shareSalesTextOnWhatsApp(rows, `daily-${date}`));
   root.querySelector('#salesExportPdf').addEventListener('click', ()=>exportSalesList('pdf', rows, `daily-${date}`));
   root.querySelector('#salesExportExcel').addEventListener('click', ()=>exportSalesList('excel', rows, `daily-${date}`));
 }
@@ -59757,6 +59751,7 @@ function renderSalesMonthly(root){
       </div>
       <div class="sales-period-tools">
         <div class="sales-total-box"><span>${t('totalSalesLabel')}</span><b>${fmtMoney(total)}</b></div>
+        <button class="btn ghost sm" id="salesShareWhatsapp">${icon('whatsapp')} ${t('shareSalesWhatsappBtn')}</button>
         <button class="btn ghost sm" id="salesExportPdf">${icon('download')} ${t('exportPdfBtn')}</button>
         <button class="btn ghost sm" id="salesExportExcel">${icon('download')} ${t('exportExcelBtn')}</button>
       </div>
@@ -59790,6 +59785,7 @@ function renderSalesMonthly(root){
   root.querySelector('#salesMonthPrev').addEventListener('click', ()=>{ state.salesMonth = addMonths(state.salesMonth,-1); render(); });
   root.querySelector('#salesMonthNext').addEventListener('click', ()=>{ state.salesMonth = addMonths(state.salesMonth,1); render(); });
   root.querySelector('#salesMonthSelect').addEventListener('change', e => { if (e.target.value){ state.salesMonth = e.target.value; render(); } });
+  root.querySelector('#salesShareWhatsapp').addEventListener('click', ()=>shareSalesTextOnWhatsApp(rows, `monthly-${ym}`));
   root.querySelector('#salesExportPdf').addEventListener('click', ()=>exportSalesList('pdf', rows, `monthly-${ym}`));
   root.querySelector('#salesExportExcel').addEventListener('click', ()=>exportSalesList('excel', rows, `monthly-${ym}`));
 }
@@ -59816,6 +59812,7 @@ function renderSalesYearly(root){
       </div>
       <div class="sales-period-tools">
         <div class="sales-total-box"><span>${t('totalSalesLabel')}</span><b>${fmtMoney(total)}</b></div>
+        <button class="btn ghost sm" id="salesShareWhatsapp">${icon('whatsapp')} ${t('shareSalesWhatsappBtn')}</button>
         <button class="btn ghost sm" id="salesExportPdf">${icon('download')} ${t('exportPdfBtn')}</button>
         <button class="btn ghost sm" id="salesExportExcel">${icon('download')} ${t('exportExcelBtn')}</button>
       </div>
@@ -59849,9 +59846,78 @@ function renderSalesYearly(root){
   root.querySelector('#salesYearPrev').addEventListener('click', ()=>{ state.salesYear = String(Number(state.salesYear)-1); render(); });
   root.querySelector('#salesYearNext').addEventListener('click', ()=>{ state.salesYear = String(Number(state.salesYear)+1); render(); });
   root.querySelector('#salesYearSelect').addEventListener('change', e => { const y=Number(e.target.value); if(y>=2000 && y<=2100){ state.salesYear=String(y); render(); } });
+  root.querySelector('#salesShareWhatsapp').addEventListener('click', ()=>shareSalesTextOnWhatsApp(rows, `yearly-${year}`));
   root.querySelector('#salesExportPdf').addEventListener('click', ()=>exportSalesList('pdf', rows, `yearly-${year}`));
   root.querySelector('#salesExportExcel').addEventListener('click', ()=>exportSalesList('excel', rows, `yearly-${year}`));
 }
+function pdfSafeText(value){
+  return String(value == null ? '' : value)
+    .replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')
+    .replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');
+}
+function buildSalesPdfBlob(rows, period){
+  const title = `${DB.settings.businessName || 'Pharmacy Records'} — ${t('navSales')}`;
+  const total = rows.reduce((sum,r)=>sum + (Number(r.amount)||0), 0);
+  const lines = [];
+  lines.push(title);
+  lines.push(`Period: ${period}`);
+  lines.push('');
+  lines.push('No.   Staff                         Sale              Date        Time');
+  lines.push('--------------------------------------------------------------------------');
+  rows.forEach((r,i)=>{
+    const st=getStaff(r.staffId);
+    const name=st ? st.name : (r.staffId ? t('removedStaff') : t('unknownSaleStaff'));
+    const sale=fmtMoney(r.amount);
+    lines.push(`${String(i+1).padEnd(5)} ${String(name).slice(0,29).padEnd(30)} ${sale.padStart(16)}  ${String(r.date||'').padEnd(10)}  ${String(r.time||'')}`);
+  });
+  lines.push('');
+  lines.push(`Total sales: ${fmtMoney(total)}`);
+
+  const esc = v => pdfSafeText(v);
+  const content=[];
+  let y=800;
+  content.push('BT /F1 15 Tf 40 800 Td');
+  lines.forEach((line,idx)=>{
+    if(idx===0){ content.push(`(${esc(line)}) Tj`); }
+    else { content.push('0 -18 Td'); content.push(`/F1 ${idx===1 ? 10 : 9} Tf (${esc(line)}) Tj`); }
+  });
+  content.push('ET');
+  const stream=content.join('\\n');
+  const objects=[];
+  objects.push('<< /Type /Catalog /Pages 2 0 R >>');
+  objects.push('<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
+  objects.push('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>');
+  objects.push(`<< /Length ${stream.length} >>\\nstream\\n${stream}\\nendstream`);
+  objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+  let pdf='%PDF-1.4\\n';
+  const offsets=[0];
+  objects.forEach((obj,i)=>{ offsets[i+1]=pdf.length; pdf += `${i+1} 0 obj\\n${obj}\\nendobj\\n`; });
+  const xref=pdf.length;
+  pdf += `xref\\n0 ${objects.length+1}\\n0000000000 65535 f \\n`;
+  for(let i=1;i<=objects.length;i++) pdf += `${String(offsets[i]).padStart(10,'0')} 00000 n \\n`;
+  pdf += `trailer\\n<< /Size ${objects.length+1} /Root 1 0 R >>\\nstartxref\\n${xref}\\n%%EOF`;
+  return new Blob([pdf],{type:'application/pdf'});
+}
+function shareSalesTextOnWhatsApp(rows, period){
+  if(!rows.length){ toast(t('shareSalesWhatsappNoSales'), true); return; }
+  const title = DB.settings.businessName || 'Pharmacy Records';
+  const total = rows.reduce((sum,r)=>sum + (Number(r.amount)||0), 0);
+  const lines = [
+    `*${title}*`,
+    `*${t('navSales')} — ${period}*`,
+    ''
+  ];
+  rows.forEach((r,i)=>{
+    const st = getStaff(r.staffId);
+    const staffName = st ? st.name : (r.staffId ? t('removedStaff') : t('unknownSaleStaff'));
+    lines.push(`${i+1}. ${staffName} — ${fmtMoney(r.amount)} — ${formatDateShort(r.date)} ${r.time || ''}`.trim());
+  });
+  lines.push('', `*${t('totalSalesLabel')}: ${fmtMoney(total)}*`);
+  const wa = `https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`;
+  window.open(wa, '_blank', 'noopener,noreferrer');
+  toast(t('shareSalesWhatsappFallback'));
+}
+
 function exportSalesList(format, rows, period){
   if (!rows.length){ toast(t('exportNoSales'), true); return; }
   const total = rows.reduce((s,r)=>s+r.amount,0);
@@ -60372,7 +60438,7 @@ function mountExpenseQuickEntry(container, tab, date, tableWrap){
           <div class="qe-field w-md"><label>${t('expUnitLabel')}</label><select id="qeUnit">${PURCHASE_UNITS.map(u=>`<option>${u}</option>`).join('')}</select></div>
           <div class="qe-field w-sm"><label>${t('expQtyLabel')}</label><input id="qeQty" type="number" min="0" step="1" placeholder="0"></div>
           <div class="qe-field w-sm"><label>${t('expPriceLabel')}</label><input id="qePrice" type="number" min="0" step="0.01" placeholder="0.00"></div>
-          <button class="qe-save" id="qeSave">${icon('plus')} ${t('saveBtn')}</button>
+          <span id="qePurchaseTotal" class="qe-total-preview"></span> <button class="qe-save" id="qeSave">${icon('plus')} ${t('saveBtn')}</button>
         </div>
         <div class="qe-error" id="qeErr"></div>
         <div class="qe-hint">${t('qeEnterHint')}</div>
@@ -60383,6 +60449,13 @@ function mountExpenseQuickEntry(container, tab, date, tableWrap){
     const qty  = container.querySelector('#qeQty');
     const price= container.querySelector('#qePrice');
     const err  = container.querySelector('#qeErr');
+    const updatePurchasePreview = () => {
+      const total = (Number(qty.value)||0) * (Number(price.value)||0);
+      const preview = container.querySelector('#qePurchaseTotal');
+      if (preview) preview.textContent = total > 0 ? `${t('total')}: ${fmtMoney(total)}` : '';
+    };
+    qty.addEventListener('input', updatePurchasePreview);
+    price.addEventListener('input', updatePurchasePreview);
     prod.focus();
     function saveEntry(){
       const p = prod.value.trim();
@@ -60483,7 +60556,7 @@ function purchaseRowsForExport(date){
     product: r.description || '',
     unit: r.unit || '',
     quantity: Number(r.quantity) || 0,
-    price: Number(r.amount) || 0,
+    price: purchaseLineTotal(r),
     date: r.date || date
   }));
 }
@@ -60550,14 +60623,14 @@ function shareExpenseOnWhatsApp(tab, period, range){
   const type = EXPENSE_TYPES[tab.toUpperCase()];
   const rows = expensesForPeriod(range.start, range.end, type);
   if(!rows.length){ toast(t('shareWhatsappNoExpense'), true); return; }
-  const total = rows.reduce((sum,r)=>sum+moneyValue(r.amount),0);
+  const total = tab === 'purchase' ? rows.reduce((sum,r)=>sum+purchaseLineTotal(r),0) : rows.reduce((sum,r)=>sum+moneyValue(r.amount),0);
   const title = DB.settings.businessName || 'Pharmacy Records';
   const typeLabel = t(tab==='purchase'?'tabPurchase':tab==='business'?'tabBusiness':'tabHome');
   const periodLabel = period==='daily' ? formatDateLong(range.start) : period==='monthly' ? monthLabelLong(range.start.slice(0,7)) : range.start.slice(0,4);
   const lines = rows.map((r,i)=>{
     const datePart = period==='daily' ? '' : ` — ${r.date||''}`;
     const desc = r.description || r.note || '—';
-    return `${i+1}. ${desc}${datePart} — ${fmtMoney(moneyValue(r.amount))}`;
+    return `${i+1}. ${desc}${datePart} — ${fmtMoney(tab==='purchase' ? purchaseLineTotal(r) : moneyValue(r.amount))}`;
   });
   const message = [
     `*${title}*`,
@@ -60575,12 +60648,12 @@ function exportExpenseList(format, tab, period, range){
   const type = EXPENSE_TYPES[tab.toUpperCase()];
   const rows = expensesForPeriod(range.start, range.end, type);
   if(!rows.length){ toast(t('exportNoExpensePeriod'), true); return; }
-  const total = rows.reduce((s,r)=>s+moneyValue(r.amount),0);
+  const total = tab === 'purchase' ? rows.reduce((s,r)=>s+purchaseLineTotal(r),0) : rows.reduce((s,r)=>s+moneyValue(r.amount),0);
   const title = `${DB.settings.businessName || 'Pharmacy Records'} — ${t(tab==='purchase'?'tabPurchase':tab==='business'?'tabBusiness':'tabHome')}`;
   const periodLabel = period==='daily' ? formatDateLong(range.start) : period==='monthly' ? monthLabelLong(range.start.slice(0,7)) : range.start.slice(0,4);
   const headers = tab==='purchase' ? [t('exportNo'),t('expProduct'),t('expUnit'),t('expQty'),t('expPrice'),t('salesTableDate')] : tab==='business' ? [t('exportNo'),t('expDesc'),t('expCat'),t('expAmount'),t('salesTableDate')] : [t('exportNo'),t('expItemDesc'),t('expAmount'),t('expNote'),t('salesTableDate')];
   const data = rows.map((r,i)=> tab==='purchase'
-    ? [i+1,r.description||'',r.unit||'',Number(r.quantity)||0,Number(r.amount)||0,r.date||'']
+    ? [i+1,r.description||'',r.unit||'',Number(r.quantity)||0,purchaseLineTotal(r),r.date||'']
     : tab==='business' ? [i+1,r.description||'',r.category||'',Number(r.amount)||0,r.date||'']
     : [i+1,r.description||'',Number(r.amount)||0,r.note||'',r.date||'']);
   if(format==='csv'){
@@ -60601,7 +60674,7 @@ function exportExpenseList(format, tab, period, range){
 function renderExpenseTable(container, tab, date, period='daily', range=null){
   range = range || expensePeriodRange(period, date, monthKey(date), String(new Date().getFullYear()));
   const rows = expensesForPeriod(range.start, range.end, EXPENSE_TYPES[tab.toUpperCase()]);
-  const total = rows.reduce((s,r)=>s+moneyValue(r.amount),0);
+  const total = tab === 'purchase' ? rows.reduce((s,r)=>s+purchaseLineTotal(r),0) : rows.reduce((s,r)=>s+moneyValue(r.amount),0);
   const showDate = period !== 'daily';
   const dateHead = showDate ? `<th>${t('salesTableDate')}</th>` : '';
   const dateCell = r => showDate ? `<td>${escapeHtml(formatDateShort(r.date))}</td>` : '';
@@ -60617,7 +60690,7 @@ function renderExpenseTable(container, tab, date, period='daily', range=null){
                 <td><span class="accent-bar cat-purchase"></span>${escapeHtml(r.description)}</td>
                 <td>${escapeHtml(r.unit||'—')}</td>
                 <td class="num">${escapeHtml(String(r.quantity ?? '—'))}</td>
-                <td class="num">${fmtMoney(r.amount)}</td>
+                <td class="num">${fmtMoney(purchaseLineTotal(r))}</td>
                 ${dateCell(r)}
                 <td>${rowActions(r)}</td>
               </tr>
@@ -61464,16 +61537,10 @@ function attachMedicineAutocomplete(input, listEl, onPick){
 /* =========================================================
    AI ASSISTANT  (Google Gemini)
    ---------------------------------------------------------
-   The API key is typed by the operator in Admin > AI Assistant and
-   is kept only in this browser's localStorage. It is sent to Google
-   and nowhere else. This page is a static file, not a server: anyone
-   with access to this browser profile can read the stored key, so
-   use a key you are willing to rotate.
-   CORS on generativelanguage.googleapis.com is open for browser
-   callers, so requests go straight from this page to Google.
+   The API key is entered by the operator in Admin > AI Assistant.
+   No API key is embedded in this file.
    ========================================================= */
 const AI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta';
-const PHARMA_NEWS_API_KEY = 'AQ.Ab8RN6IF-GwZD9UvNmLMy6egHxdrAIlxz_OCKdtDB7E72BC5tA';
 const AI_HISTORY_TURNS = 12;      // past messages replayed with each request
 const AI_CTX_MAX_CHARS = 420000;  // ~105k tokens; bigger snapshots get rolled up
 const AI_CHAT_MAX = 200;          // messages kept in local history
@@ -61493,7 +61560,7 @@ const AI_MODELS = [
 function defaultAiSettings(){
   return {
     enabled: true,
-    apiKey: PHARMA_NEWS_API_KEY,
+    apiKey: '',
     model: 'gemini-2.5-flash',
     temperature: 0.6,
     maxTokens: 4096,
@@ -61552,7 +61619,7 @@ function aiKpis(){
     monthExpenseTotal: round2(monthExpTotal),
     monthNet: round2(monthSales - monthExpTotal),
     monthSalary: round2(monthExp.filter(e => e.source === 'attendance').reduce((s, e) => s + e.amount, 0)),
-    monthPurchase: round2(sumType(EXPENSE_TYPES.PURCHASE)),
+    monthPurchase: round2(mExp.filter(e => e.type === EXPENSE_TYPES.PURCHASE).reduce((sum,e)=>sum + purchaseLineTotal(e),0)),
     monthBusiness: round2(sumType(EXPENSE_TYPES.BUSINESS)),
     monthHome: round2(sumType(EXPENSE_TYPES.HOME)),
     receivableFromDebtors: round2(totalReceivable()),
@@ -62806,6 +62873,9 @@ const TRANSLATIONS = {
     expEntry: 'entry',
     expEntries: 'entries',
     exportPdfBtn: 'Export PDF',
+    shareSalesWhatsappBtn: 'WhatsApp',
+    shareSalesWhatsappNoSales: 'No sales recorded for this period.',
+    shareSalesWhatsappFallback: 'Sales list is ready to share on WhatsApp.',
     shareWhatsappBtn: 'WhatsApp',
     shareWhatsappNoExpense: 'No expenses recorded for this period.',
     exportExcelBtn: 'Excel',
@@ -63243,6 +63313,9 @@ const TRANSLATIONS = {
     expEntry: 'এন্ট্রি',
     expEntries: 'এন্ট্রি',
     exportPdfBtn: 'PDF এক্সপোর্ট',
+    shareSalesWhatsappBtn: 'WhatsApp',
+    shareSalesWhatsappNoSales: 'এই সময়ের জন্য কোনো বিক্রয় রেকর্ড নেই।',
+    shareSalesWhatsappFallback: 'বিক্রয় তালিকা WhatsApp-এ শেয়ার করার জন্য প্রস্তুত।',
     shareWhatsappBtn: 'হোয়াটসঅ্যাপ',
     shareWhatsappNoExpense: 'এই সময়ের জন্য কোনো খরচের রেকর্ড নেই।',
     exportExcelBtn: 'এক্সেল',
@@ -63544,89 +63617,6 @@ function toggleLang(){
 }
 
 /* =========================================================
-   BANGLADESH PHARMA NEWS — check on every app login/reload
-========================================================= */
-function pharmaNewsShouldCheck(){
-  // Intentionally check on every fresh app initialization.
-  // No 24-hour localStorage cooldown is used.
-  return true;
-}
-function pharmaNewsEscapeText(v){ return escapeHtml(String(v == null ? '' : v)); }
-function pharmaNewsSourceHtml(sources){
-  const unique = [];
-  const seen = new Set();
-  (sources || []).forEach(s => {
-    const uri = String(s && (s.uri || s.url) || '').trim();
-    const title = String(s && (s.title || s.domain) || '').trim();
-    if (!uri || seen.has(uri)) return;
-    seen.add(uri); unique.push({uri, title: title || 'সূত্র'});
-  });
-  return unique.slice(0,5).map(s => '<a class="pharma-news-source" href="' + escapeHtml(s.uri) + '" target="_blank" rel="noopener noreferrer">' + icon('link') + escapeHtml(s.title) + '</a>').join('');
-}
-function pharmaNewsExtractSources(data){
-  const out = [];
-  const gm = data && data.candidates && data.candidates[0] && data.candidates[0].groundingMetadata;
-  const chunks = gm && Array.isArray(gm.groundingChunks) ? gm.groundingChunks : [];
-  chunks.forEach(c => { if (c && c.web) out.push({ uri:c.web.uri, title:c.web.title }); });
-  return out;
-}
-function pharmaNewsRender(title, body, sources, error){
-  const mount = document.getElementById('pharmaNewsMount');
-  if (!mount) return;
-  mount.innerHTML = '<div class="pharma-news" id="pharmaNewsBar">'
-    + '<div class="pharma-news-inner">'
-    + '<div class="pharma-news-mark">' + icon('bell') + '</div>'
-    + '<div class="pharma-news-main">'
-    + '<div class="pharma-news-kicker">বাংলাদেশ ফার্মা আপডেট</div>'
-    + '<div class="pharma-news-title">' + pharmaNewsEscapeText(title) + '</div>'
-    + '<div class="pharma-news-body">' + pharmaNewsEscapeText(body) + '</div>'
-    + (sources && sources.length ? '<div class="pharma-news-sources">' + pharmaNewsSourceHtml(sources) + '</div>' : '')
-    + '</div>'
-    + '<button class="pharma-news-close" type="button" title="বন্ধ করুন" aria-label="বন্ধ করুন">' + icon('x') + '</button>'
-    + '</div></div>';
-  const bar = mount.querySelector('#pharmaNewsBar');
-  mount.querySelector('.pharma-news-close').addEventListener('click', () => bar.classList.remove('show'));
-  requestAnimationFrame(() => requestAnimationFrame(() => bar.classList.add('show')));
-}
-async function fetchBangladeshPharmaNews(){
-  if (!pharmaNewsShouldCheck()) return;
-  const newsApiKey = String(aiApiKey() || PHARMA_NEWS_API_KEY).trim();
-  if (!newsApiKey) return;
-  const now = new Date();
-  const start = new Date(now.getTime() - 24*60*60*1000);
-  const payload = {
-    contents:[{role:'user',parts:[{text:[
-      'You are the daily Bangladesh pharmacy regulatory news monitor for a pharmacy dashboard.',
-      'Search the web now. Return ONLY the most important Bangladesh pharmaceutical-sector developments published or materially updated in the last 24 hours.',
-      'Focus strictly on Bangladesh and these categories: new or proposed government laws/rules/circulars affecting medicines or pharmacies; DGDA or government medicine bans, recalls, suspensions, warnings, or safety notices; newly approved/registered/introduced medicines that are relevant to Bangladesh; medicines or important pharmaceutical products reported as unavailable, discontinued, withdrawn, or out of market in Bangladesh; and other urgent official pharmaceutical regulatory changes.',
-      'Prioritize primary sources such as DGDA, Bangladesh government ministries, Bangladesh Gazette, official circulars/notices, and official manufacturer notices. Use reputable Bangladesh news outlets only when primary-source confirmation is unavailable.',
-      'Do not include general health advice, hospital news, international pharma news without a Bangladesh-specific effect, routine company promotions, stock-market news, or old stories.',
-      'If there is no genuinely important Bangladesh pharma development in the last 24 hours, return exactly: NO_NEWS',
-      'Otherwise write in Bangla script, 1 to 4 concise bullets. Each bullet must contain: category, headline, what changed, and the date. Do not speculate. Clearly say when something is a proposal/report rather than a final government action.',
-      'At the end add one short line: “সূত্র: …” using the source names you actually relied on. Do not invent URLs or sources.'
-    ].join(' ')}]}],
-    systemInstruction:{parts:[{text:'Be a factual news monitor. Use Google Search grounding. The current date/time is '+now.toISOString()+'. Only report developments from the last 24 hours relevant to Bangladesh pharmaceuticals. Write only in Bangla.'}]},
-    generationConfig:{temperature:0.2,maxOutputTokens:900},
-    tools:[{google_search:{timeRangeFilter:{startTime:start.toISOString(),endTime:now.toISOString()}}}]
-  };
-  try{
-    const data = await (async () => {
-      const res = await aiPost('generateContent', payload, null, { apiKey: newsApiKey });
-      if (!res.ok) throw await aiReadError(res);
-      return await res.json();
-    })();
-    const text = String((data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts || []).map(p => p.text || '').join('')).trim();
-    if (!text || text === 'NO_NEWS') return;
-    const cleaned = text.replace(/^সূত্র:\s*.+$/mi, '').trim();
-    const sources = pharmaNewsExtractSources(data);
-    pharmaNewsRender('আজকের গুরুত্বপূর্ণ আপডেট', cleaned, sources);
-  } catch (err){
-    // News is optional. Never block the dashboard if Search/API is unavailable.
-    console.warn('Bangladesh pharma news check failed:', err);
-  }
-}
-
-/* =========================================================
    INITIALIZATION
 ========================================================= */
 async function initApp(){
@@ -63640,8 +63630,6 @@ async function initApp(){
     setTimeout(() => loader.remove(), 650);
   }
   if (state.view === 'dashboard') animateDashboardNumbers(document.getElementById('viewRoot'));
-  // Check automatically after every fresh login/reload; no user click or text entry required.
-  setTimeout(() => { fetchBangladeshPharmaNews(); }, 900);
 }
 initApp();
 </script>
