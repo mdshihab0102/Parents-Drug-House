@@ -535,71 +535,6 @@
   .btn svg{width:15px;height:15px;}
   .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
 
-  /* Sales period controls — visual polish only; no data/logic changes */
-  .sales-period-tools{
-    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    padding:5px;
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--r-md);
-    box-shadow:var(--shadow-xs);
-  }
-  .sales-total-box{
-    min-width:150px;
-    padding:8px 13px;
-    border-radius:10px;
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    display:flex;align-items:center;gap:10px;justify-content:space-between;
-    line-height:1.15;
-  }
-  .sales-total-box span{
-    font-size:10.5px;font-weight:700;letter-spacing:.055em;text-transform:uppercase;color:var(--ink-3);
-  }
-  .sales-total-box b{
-    font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent-text);
-    font-variant-numeric:tabular-nums;white-space:nowrap;
-  }
-  .sales-period-tools .btn{
-    min-height:36px;justify-content:center;
-    padding:8px 13px;
-    border-radius:10px;
-    gap:7px;
-  }
-  .sales-period-tools .btn.ghost{
-    border:1px solid var(--border-2);
-    background:var(--surface);
-    color:var(--ink-2);
-    box-shadow:var(--shadow-xs);
-  }
-  .sales-period-tools .btn.ghost:hover{
-    border-color:color-mix(in srgb, var(--accent) 45%, var(--border-2));
-    background:var(--accent-soft);
-    color:var(--accent-text);
-    box-shadow:0 5px 14px -10px var(--accent-glow);
-    transform:translateY(-1px);
-  }
-  .sales-period-tools .btn.ghost:active{transform:translateY(0) scale(.97);}
-  .sales-period-tools .btn svg{width:14px;height:14px;}
-
-  .expense-period-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:-2px 0 16px;}
-  .expense-period-switch{display:inline-flex;align-items:center;gap:3px;padding:4px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--shadow-xs);}
-  .expense-period-btn{border:0;background:transparent;color:var(--ink-2);padding:8px 15px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all var(--t-fast) var(--ease);}
-  .expense-period-btn:hover{color:var(--ink);background:var(--surface-2);}
-  .expense-period-btn.active{color:var(--on-accent);background:var(--accent);box-shadow:0 5px 14px -8px var(--accent-glow);}
-  .expense-summary-card{display:flex;align-items:center;gap:10px;min-width:215px;padding:9px 13px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-xs);}
-  .expense-summary-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-text);flex-shrink:0;}
-  .expense-summary-icon svg{width:15px;height:15px;}
-  .expense-summary-card span{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.055em;color:var(--ink-3);}
-  .expense-summary-card b{display:block;margin-top:2px;font-family:var(--mono);font-size:14px;color:var(--accent-text);font-variant-numeric:tabular-nums;}
-  .expense-summary-card em{margin-left:auto;font-style:normal;font-size:11px;color:var(--ink-3);white-space:nowrap;}
-  .expense-section-bar{margin-bottom:16px;}
-  .expense-period-label{min-width:185px;}
-  .expense-period-input{height:32px;border:1px solid transparent;border-radius:9px;padding:6px 10px;background:var(--surface-2);color:var(--ink);font-weight:600;font-size:12px;cursor:pointer;outline:none;}
-  .expense-period-input:hover,.expense-period-input:focus{border-color:var(--border-2);}
-  .expense-export-actions{gap:7px;}
-  .expense-export-actions .btn{min-height:34px;border-radius:9px;}
-  .expense-export-actions .btn:not(.primary){background:var(--surface);}
   .tab-row{display:inline-flex;gap:2px;margin-bottom:18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:4px;box-shadow:var(--shadow-xs);position:relative;}
   .tab-btn{
     border:none;background:transparent;position:relative;z-index:1;
@@ -608,14 +543,6 @@
   }
   .tab-btn:hover{color:var(--ink);}
   .tab-btn.active{color:var(--on-accent);background:var(--accent);box-shadow:0 6px 14px -8px var(--accent-glow);}
-
-  /* Staff Attendance: the table header scrolls naturally with the attendance rows. */
-  .attendance-table-wrap{overflow-x:auto;overflow-y:visible;}
-  .attendance-table thead th.attendance-sticky-head{
-    position:static;
-    background:var(--surface-2);
-    box-shadow:none;
-  }
 
   /* =========================================================
      TABLES / PANELS
@@ -804,13 +731,6 @@
   .note-text{font-size:12.5px;color:var(--ink-3);margin-top:12px;line-height:1.55;}
   .divider{height:1px;background:var(--border);margin:18px 0;border:none;}
   .section-title{font-size:13px;font-weight:700;margin:0 0 10px;letter-spacing:.01em;display:flex;align-items:center;gap:8px;}
-  .section-title .section-action{margin-left:auto;}
-  .cd-table-add{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:30px;padding:0 11px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface);color:var(--accent-text);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(20,30,50,.04);transition:background-color var(--t-fast),border-color var(--t-fast),transform var(--t-fast) var(--ease),box-shadow var(--t-fast);white-space:nowrap;}
-  .cd-table-add svg{width:14px;height:14px;}
-  .cd-table-add:hover{background:var(--accent-soft);border-color:var(--accent);box-shadow:0 3px 10px rgba(20,30,50,.07);transform:translateY(-1px);}
-  .cd-table-add:active{transform:translateY(0) scale(.98);}
-  .cd-table-add:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-  .cd-fast-hint{margin-top:7px;font-size:11px;color:var(--ink-3);}
   .section-title .sw{width:8px;height:8px;border-radius:3px;}
   .inline-summary{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
   .inline-summary .item{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 16px;min-width:140px;flex:1;}
@@ -939,16 +859,9 @@
     .qe-save{width:100%;justify-content:center;}
   }
 
-  .attend-btn:disabled{opacity:.62;cursor:not-allowed;filter:saturate(.7);}
-
   /* =========================================================
      RESPONSIVE
    ========================================================= */
-  @media (max-width: 900px){
-    .sales-period-tools{width:100%;}
-    .sales-period-tools .sales-total-box{flex:1;min-width:145px;}
-  }
-
   @media (max-width: 900px){
     :root{--sidebar-w:72px;}
     .sidebar{padding:14px 10px;}
@@ -1290,7 +1203,6 @@
     .ai-typing i,.ai-caret{animation:none;}
     .ai-drawer{transition:none;}
   }
-.qe-total-preview{font-size:12px;font-weight:700;color:var(--primary,#2563eb);white-space:nowrap;min-width:110px;text-align:right;}
 </style>
 </head>
 <body>
@@ -58459,8 +58371,6 @@ const SUPABASE_TABLES = {
   creditors:'creditors', settings:'settings', aiChat:'ai_chat'
 };
 const DEFAULT_ADMIN_PASSWORD = '1234'; // CHANGE THIS in Admin > Security for real use
-const DEVELOPER_AI_PASSWORD = '0102'; // Developer-only access to Admin > AI Assistant
-let developerAiUnlocked = false;
 const EXPENSE_TYPES = { PURCHASE:'purchase', BUSINESS:'business', HOME:'home' };
 const BUSINESS_CATEGORIES = ['Staff Salary','Utilities','Staff Food','Transport','Maintenance','Other'];
 const PURCHASE_UNITS = ['Box','Strip','Unit','Bottle','Piece','Other'];
@@ -58520,9 +58430,7 @@ const ICONS = {
   key:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m11 12 9-9M17 6l2.5 2.5M14 9l2.5 2.5"/></svg>',
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   refresh:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>',
-  stop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
-  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
-  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+  stop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>'
 };
 function icon(name){ return ICONS[name] || ''; }
 
@@ -58648,13 +58556,12 @@ async function loadAll(){
     DB.creditors = creditors || [];
     DB.settings = settings || null;
     DB.aiChat = aiChat || [];
-    if (DB.staff.length === 0){ DB.staff = demoStaff(); await saveKey('staff'); }
+    // An empty Supabase staff table is a valid state. Do not recreate demo staff on reload.
     if (!DB.settings){
       DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
       await saveKey('settings');
     }
     normaliseLoadedData();
-    await clearPreviouslyEmbeddedAiKey();
     cacheAll();
   }catch(e){
     console.error('Supabase load failed; using local cache if present.', e);
@@ -58671,22 +58578,9 @@ function loadAllFromLocalCache(){
   DB.creditors = readCache('creditors', []);
   DB.settings = readCache('settings', null);
   DB.aiChat = readCache('aiChat', []);
-  if (DB.staff === null) DB.staff = demoStaff();
+  // Preserve an explicitly empty local staff list; do not recreate demo staff on reload.
   if (DB.settings === null) DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
   normaliseLoadedData();
-  // One-time cleanup of the previously embedded AI key is handled during the remote load path.
-}
-async function clearPreviouslyEmbeddedAiKey(){
-  const marker = 'pharmacy_ai_key_cleanup_v1';
-  try{
-    if (localStorage.getItem(marker) === '1') return;
-  }catch(e){ return; }
-  if (DB.settings && DB.settings.ai && typeof DB.settings.ai === 'object') {
-    DB.settings.ai.apiKey = '';
-    try { await saveKey('settings'); } catch(e) {}
-    try { writeCache('settings'); } catch(e) {}
-  }
-  try { localStorage.setItem(marker, '1'); } catch(e) {}
 }
 function normaliseLoadedData(){
   if (!Array.isArray(DB.staff)) DB.staff = [];
@@ -58897,41 +58791,6 @@ function requireAdmin(onSuccess, title){
   });
 }
 
-
-function requireDeveloperAi(onSuccess){
-  if (developerAiUnlocked){ onSuccess(); return; }
-  openModal({
-    title: t('developerAiAuthTitle'),
-    wide:false,
-    bodyHtml: `
-      <div class="field">
-        <label for="developerAiPwInput">${t('developerAiAuthLabel')}</label>
-        <input type="password" id="developerAiPwInput" autocomplete="off" inputmode="numeric" placeholder="••••">
-      </div>
-      <div class="field-error" id="developerAiPwError"></div>
-    `,
-    footHtml: `<button class="btn" data-close>${t('cancelBtn')}</button><button class="btn primary" id="developerAiPwSubmit">${t('unlockBtn')}</button>`,
-    onMount(modalEl){
-      const input = modalEl.querySelector('#developerAiPwInput');
-      const err = modalEl.querySelector('#developerAiPwError');
-      input.focus();
-      function attempt(){
-        if (input.value === DEVELOPER_AI_PASSWORD){
-          developerAiUnlocked = true;
-          closeModal();
-          onSuccess();
-        } else {
-          err.textContent = t('developerAiAuthIncorrect');
-          input.value = '';
-          input.focus();
-        }
-      }
-      modalEl.querySelector('#developerAiPwSubmit').addEventListener('click', attempt);
-      input.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); attempt(); } });
-    }
-  });
-}
-
 /* =========================================================
    STAFF MANAGEMENT
 ========================================================= */
@@ -58967,18 +58826,32 @@ function setStaffActive(id, active){
   s.active = active;
   saveKey('staff');
 }
-function deleteStaff(id){
+async function deleteStaff(id){
+  const staffBefore = DB.staff.slice();
+  const attendanceBefore = DB.attendance.slice();
+  const salesBefore = DB.sales.slice();
+  const expensesBefore = DB.expenses.slice();
   const before = DB.staff.length;
   DB.staff = DB.staff.filter(s => s.id !== id);
   DB.attendance = DB.attendance.filter(a => a.staffId !== id);
   DB.sales = DB.sales.filter(s => s.staffId !== id);
   DB.expenses = DB.expenses.filter(e => e.staffId !== id);
-  if (DB.staff.length !== before){
-    saveKey('staff');
-    saveKey('attendance');
-    saveKey('sales');
-    saveKey('expenses');
+  if (DB.staff.length === before) return { ok:false, error:'Staff member not found.' };
+
+  // Wait for every Supabase write. If any write fails, restore the in-memory/cache state
+  // so a failed remote delete cannot look successful and then reappear after reload.
+  const results = [];
+  for (const name of ['staff','attendance','sales','expenses']) results.push(await saveKey(name));
+  const failed = results.find(r => !r.ok);
+  if (failed){
+    DB.staff = staffBefore;
+    DB.attendance = attendanceBefore;
+    DB.sales = salesBefore;
+    DB.expenses = expensesBefore;
+    ['staff','attendance','sales','expenses'].forEach(writeCache);
+    return { ok:false, error:failed.error || new Error('Supabase delete failed.') };
   }
+  return { ok:true };
 }
 
 /* =========================================================
@@ -59081,7 +58954,6 @@ function deleteSale(id){
 }
 function salesForDate(date){ return DB.sales.filter(s => s.date === date).sort((a,b)=> b.timestamp - a.timestamp); }
 function salesForMonth(ym){ return DB.sales.filter(s => monthKey(s.date) === ym).sort((a,b)=> b.date === a.date ? b.timestamp - a.timestamp : b.date.localeCompare(a.date)); }
-function salesForYear(year){ const y=String(year); return DB.sales.filter(s => String(s.date||'').slice(0,4) === y).sort((a,b)=> b.date === a.date ? b.timestamp - a.timestamp : b.date.localeCompare(a.date)); }
 function addMonths(ym, delta){
   const [y, m] = ym.split('-').map(Number);
   const d = new Date(y, m - 1 + delta, 1);
@@ -59094,12 +58966,6 @@ function monthLabelLong(ym){
 /* =========================================================
    EXPENSES
 ========================================================= */
-function purchaseLineTotal(entry){
-  const qty = Number(entry && entry.quantity) || 0;
-  const unitPrice = Number(entry && entry.amount) || 0;
-  return qty > 0 ? qty * unitPrice : unitPrice;
-}
-
 function addExpense(entry){
   const exp = Object.assign({ id: uid('exp'), source:'manual', note:'' }, entry);
   DB.expenses.push(exp);
@@ -59160,7 +59026,7 @@ function dashboardStats(){
   }).length;
   const salaryToday = todaysSalaryTotal(date);
   const bizExpense = expensesForDate(date, EXPENSE_TYPES.BUSINESS).reduce((s,e)=>s + moneyValue(e.amount), 0)
-                    + expensesForDate(date, EXPENSE_TYPES.PURCHASE).reduce((s,e)=>s + purchaseLineTotal(e), 0);
+                    + expensesForDate(date, EXPENSE_TYPES.PURCHASE).reduce((s,e)=>s + moneyValue(e.amount), 0);
   const homeExpense = expensesForDate(date, EXPENSE_TYPES.HOME).reduce((s,e)=>s + moneyValue(e.amount), 0);
   return {
     date, totalSales, presentCount, activeCount: activeStaff.length,
@@ -59178,16 +59044,10 @@ let state = {
   salesDate: todayISO(),
   salesTab: 'daily',
   salesMonth: monthKey(todayISO()),
-  salesYear: String(new Date().getFullYear()),
   expenseTab: EXPENSE_TYPES.PURCHASE,
-  expensePeriod: 'daily',
   expenseDates: { purchase: todayISO(), business: todayISO(), home: todayISO() },
-  expenseMonths: { purchase: monthKey(todayISO()), business: monthKey(todayISO()), home: monthKey(todayISO()) },
-  expenseYears: { purchase: String(new Date().getFullYear()), business: String(new Date().getFullYear()), home: String(new Date().getFullYear()) },
   adminTab: 'staff',
   adminUnlocked: false,
-  attendanceUnlocked: false,
-  attendanceFocusToday: false,
   saleModalStaffId: null,
   aiDraft: '',
 };
@@ -59216,12 +59076,6 @@ function navigate(view){
   }
   if (state.view === 'admin' && view !== 'admin'){
     state.adminUnlocked = false;
-  }
-  if (view === 'attendance'){
-    // Whenever the Staff Attendance panel is opened from navigation,
-    // start on today's month and smoothly center today's row in view.
-    state.attendanceDate = todayISO();
-    state.attendanceFocusToday = true;
   }
   state.view = view;
   render();
@@ -59379,7 +59233,7 @@ function dashboardExtra(){
   const series = [];
   for (let i=13;i>=0;i--){ const d = addDays(today,-i); series.push({ date:d, value:sumSales(d) }); }
   const ySales = sumSales(yesterday);
-  const yExp = [EXPENSE_TYPES.BUSINESS, EXPENSE_TYPES.PURCHASE].reduce((s,t)=> s + expensesForDate(yesterday,t).reduce((a,e)=>a + (t===EXPENSE_TYPES.PURCHASE ? purchaseLineTotal(e) : moneyValue(e.amount)), 0), 0);
+  const yExp = [EXPENSE_TYPES.BUSINESS, EXPENSE_TYPES.PURCHASE].reduce((s,t)=> s + expensesForDate(yesterday,t).reduce((a,e)=>a + moneyValue(e.amount), 0), 0);
   const yHome = expensesForDate(yesterday, EXPENSE_TYPES.HOME).reduce((a,e)=>a + moneyValue(e.amount), 0);
   const mSales = DB.sales.filter(s => monthKey(s.date)===ym).reduce((s,x)=>s + moneyValue(x.amount), 0);
   // Build the monthly expense mix from the same type used by each
@@ -59390,7 +59244,7 @@ function dashboardExtra(){
     .filter(predicate)
     .reduce((sum, e) => sum + moneyValue(e.amount), 0);
 
-  const purchaseTotal = mExp.filter(e => e.type === EXPENSE_TYPES.PURCHASE).reduce((sum,e) => sum + purchaseLineTotal(e), 0);
+  const purchaseTotal = sumExpenses(e => e.type === EXPENSE_TYPES.PURCHASE);
   const salaryTotal = sumExpenses(e =>
     e.type === EXPENSE_TYPES.BUSINESS && e.source === 'attendance'
   );
@@ -59654,7 +59508,6 @@ function quickCard(iconName, view, title, desc, i){
 ========================================================= */
 function renderSales(root){
   if (state.salesTab === 'monthly'){ renderSalesMonthly(root); return; }
-  if (state.salesTab === 'yearly'){ renderSalesYearly(root); return; }
   const date = state.salesDate;
   const rows = salesForDate(date);
   const total = rows.reduce((s,r)=>s+r.amount,0);
@@ -59666,7 +59519,6 @@ function renderSales(root){
     <div class="tab-row">
       <button class="tab-btn ${state.salesTab==='daily'?'active':''}" data-sales-tab="daily">${t('salesTabDaily')}</button>
       <button class="tab-btn ${state.salesTab==='monthly'?'active':''}" data-sales-tab="monthly">${t('salesTabMonthly')}</button>
-      <button class="tab-btn ${state.salesTab==='yearly'?'active':''}" data-sales-tab="yearly">${t('salesTabYearly')}</button>
     </div>
     <div class="section-bar">
       <div class="date-nav">
@@ -59674,12 +59526,6 @@ function renderSales(root){
         ${dateLabelHtml(date)}
         <button class="icon-btn" id="salesNext" title="${t('nextDay')}">${icon('arrowRight')}</button>
         ${dateSelectHtml('salesDateSelect', date)}
-      </div>
-      <div class="sales-period-tools">
-        <div class="sales-total-box"><span>${t('totalSalesLabel')}</span><b>${fmtMoney(total)}</b></div>
-        <button class="btn ghost sm" id="salesShareWhatsapp">${icon('whatsapp')} ${t('shareSalesWhatsappBtn')}</button>
-        <button class="btn ghost sm" id="salesExportPdf">${icon('download')} ${t('exportPdfBtn')}</button>
-        <button class="btn ghost sm" id="salesExportExcel">${icon('download')} ${t('exportExcelBtn')}</button>
       </div>
     </div>
     ${staffKeyBar}
@@ -59689,9 +59535,9 @@ function renderSales(root){
         <thead><tr><th>${t('salesTableStaff')}</th><th class="num">${t('salesTableSale')}</th><th>${t('salesTableDate')}</th><th>${t('salesTableTime')}</th><th></th></tr></thead>
         <tbody>
           ${rows.length ? rows.map(r => {
-            const st = getStaff(r.staffId);
+            const s = getStaff(r.staffId);
             return `<tr>
-              <td><div class="cell-name"><span class="avatar">${st?escapeHtml(st.keyword):'?'}</span>${st ? escapeHtml(st.name) : (r.staffId ? `<span class="muted">${t('removedStaff')}</span>` : `<span class="muted">${t('unknownSaleStaff')}</span>`)}</div></td>
+              <td><div class="cell-name"><span class="avatar">${s?escapeHtml(s.keyword):'?'}</span>${s ? escapeHtml(s.name) : `<span class="muted">${t('removedStaff')}</span>`}</div></td>
               <td class="num">${fmtMoney(r.amount)}</td>
               <td class="muted">${formatDateShort(r.date)}</td>
               <td class="muted" style="font-family:var(--mono);font-size:12.5px">${r.time}</td>
@@ -59709,22 +59555,16 @@ function renderSales(root){
       <div class="totals-strip">
         <div class="lead">${t('totalSalesLabel')} <b>${fmtMoney(total)}</b></div>
         ${Object.entries(byStaff).map(([sid,amt])=>{
-          const st = getStaff(sid);
-          return st ? `<div>${escapeHtml(st.name)} <b>${fmtMoney(amt)}</b></div>` : '';
+          const s = getStaff(sid);
+          return s ? `<div>${escapeHtml(s.name)} <b>${fmtMoney(amt)}</b></div>` : '';
         }).join('')}
       </div>
     </div>
   `;
-  bindSalesCommon(root);
+  root.querySelectorAll('[data-sales-tab]').forEach(b => b.addEventListener('click', ()=>{ state.salesTab = b.dataset.salesTab; render(); }));
   root.querySelector('#salesPrev').addEventListener('click', ()=>{ state.salesDate = addDays(state.salesDate,-1); render(); });
   root.querySelector('#salesNext').addEventListener('click', ()=>{ state.salesDate = addDays(state.salesDate,1); render(); });
   root.querySelector('#salesDateSelect').addEventListener('change', e => { state.salesDate = e.target.value; render(); });
-  root.querySelector('#salesShareWhatsapp').addEventListener('click', ()=>shareSalesTextOnWhatsApp(rows, `daily-${date}`));
-  root.querySelector('#salesExportPdf').addEventListener('click', ()=>exportSalesList('pdf', rows, `daily-${date}`));
-  root.querySelector('#salesExportExcel').addEventListener('click', ()=>exportSalesList('excel', rows, `daily-${date}`));
-}
-function bindSalesCommon(root){
-  root.querySelectorAll('[data-sales-tab]').forEach(b => b.addEventListener('click', ()=>{ state.salesTab = b.dataset.salesTab; render(); }));
   root.querySelectorAll('[data-edit-sale]').forEach(b => b.addEventListener('click', () => openEditSaleModal(b.dataset.editSale)));
   root.querySelectorAll('[data-del-sale]').forEach(b => b.addEventListener('click', () => confirmDeleteSale(b.dataset.delSale)));
 }
@@ -59740,7 +59580,6 @@ function renderSalesMonthly(root){
     <div class="tab-row">
       <button class="tab-btn ${state.salesTab==='daily'?'active':''}" data-sales-tab="daily">${t('salesTabDaily')}</button>
       <button class="tab-btn ${state.salesTab==='monthly'?'active':''}" data-sales-tab="monthly">${t('salesTabMonthly')}</button>
-      <button class="tab-btn ${state.salesTab==='yearly'?'active':''}" data-sales-tab="yearly">${t('salesTabYearly')}</button>
     </div>
     <div class="section-bar">
       <div class="date-nav">
@@ -59749,12 +59588,7 @@ function renderSalesMonthly(root){
         <button class="icon-btn" id="salesMonthNext" title="${t('nextDay')}">${icon('arrowRight')}</button>
         <input type="month" class="date-select" id="salesMonthSelect" value="${ym}">
       </div>
-      <div class="sales-period-tools">
-        <div class="sales-total-box"><span>${t('totalSalesLabel')}</span><b>${fmtMoney(total)}</b></div>
-        <button class="btn ghost sm" id="salesShareWhatsapp">${icon('whatsapp')} ${t('shareSalesWhatsappBtn')}</button>
-        <button class="btn ghost sm" id="salesExportPdf">${icon('download')} ${t('exportPdfBtn')}</button>
-        <button class="btn ghost sm" id="salesExportExcel">${icon('download')} ${t('exportExcelBtn')}</button>
-      </div>
+      <div class="hint">${icon('inbox')} ${rows.length} ${rows.length===1?t('expEntry'):t('expEntries')}</div>
     </div>
     ${staffKeyBar}
     <div class="panel">
@@ -59763,13 +59597,18 @@ function renderSalesMonthly(root){
         <thead><tr><th>${t('salesTableStaff')}</th><th class="num">${t('salesTableSale')}</th><th>${t('salesTableDate')}</th><th>${t('salesTableTime')}</th><th></th></tr></thead>
         <tbody>
           ${rows.length ? rows.map(r => {
-            const st = getStaff(r.staffId);
+            const s = getStaff(r.staffId);
             return `<tr>
-              <td><div class="cell-name"><span class="avatar">${st?escapeHtml(st.keyword):'?'}</span>${st ? escapeHtml(st.name) : (r.staffId ? `<span class="muted">${t('removedStaff')}</span>` : `<span class="muted">${t('unknownSaleStaff')}</span>`)}</div></td>
+              <td><div class="cell-name"><span class="avatar">${s?escapeHtml(s.keyword):'?'}</span>${s ? escapeHtml(s.name) : `<span class="muted">${t('removedStaff')}</span>`}</div></td>
               <td class="num">${fmtMoney(r.amount)}</td>
               <td class="muted">${formatDateShort(r.date)}</td>
               <td class="muted" style="font-family:var(--mono);font-size:12.5px">${r.time}</td>
-              <td><div class="row-actions"><button data-edit-sale="${r.id}" title="${t('attEdit')}">${icon('edit')}</button><button class="del" data-del-sale="${r.id}" title="${t('deleteBtn')}">${icon('trash')}</button></div></td>
+              <td>
+                <div class="row-actions">
+                  <button data-edit-sale="${r.id}" title="${t('attEdit')}">${icon('edit')}</button>
+                  <button class="del" data-del-sale="${r.id}" title="${t('deleteBtn')}">${icon('trash')}</button>
+                </div>
+              </td>
             </tr>`;
           }).join('') : `<tr class="empty-row"><td colspan="5">${emptyStateHtml('inbox',t('noSalesDate'),'')}</td></tr>`}
         </tbody>
@@ -59777,163 +59616,19 @@ function renderSalesMonthly(root){
       </div>
       <div class="totals-strip">
         <div class="lead">${t('totalSalesLabel')} <b>${fmtMoney(total)}</b></div>
-        ${Object.entries(byStaff).map(([sid,amt])=>{ const st=getStaff(sid); return st ? `<div>${escapeHtml(st.name)} <b>${fmtMoney(amt)}</b></div>` : ''; }).join('')}
+        ${Object.entries(byStaff).map(([sid,amt])=>{
+          const s = getStaff(sid);
+          return s ? `<div>${escapeHtml(s.name)} <b>${fmtMoney(amt)}</b></div>` : '';
+        }).join('')}
       </div>
     </div>
   `;
-  bindSalesCommon(root);
+  root.querySelectorAll('[data-sales-tab]').forEach(b => b.addEventListener('click', ()=>{ state.salesTab = b.dataset.salesTab; render(); }));
   root.querySelector('#salesMonthPrev').addEventListener('click', ()=>{ state.salesMonth = addMonths(state.salesMonth,-1); render(); });
   root.querySelector('#salesMonthNext').addEventListener('click', ()=>{ state.salesMonth = addMonths(state.salesMonth,1); render(); });
   root.querySelector('#salesMonthSelect').addEventListener('change', e => { if (e.target.value){ state.salesMonth = e.target.value; render(); } });
-  root.querySelector('#salesShareWhatsapp').addEventListener('click', ()=>shareSalesTextOnWhatsApp(rows, `monthly-${ym}`));
-  root.querySelector('#salesExportPdf').addEventListener('click', ()=>exportSalesList('pdf', rows, `monthly-${ym}`));
-  root.querySelector('#salesExportExcel').addEventListener('click', ()=>exportSalesList('excel', rows, `monthly-${ym}`));
-}
-function renderSalesYearly(root){
-  const year = String(state.salesYear || new Date().getFullYear());
-  const rows = salesForYear(year);
-  const total = rows.reduce((s,r)=>s+r.amount,0);
-  const byStaff = {};
-  rows.forEach(r => { byStaff[r.staffId] = (byStaff[r.staffId]||0) + r.amount; });
-  const staffKeyBar = staffKeyBarHtml();
-
-  root.innerHTML = `
-    <div class="tab-row">
-      <button class="tab-btn ${state.salesTab==='daily'?'active':''}" data-sales-tab="daily">${t('salesTabDaily')}</button>
-      <button class="tab-btn ${state.salesTab==='monthly'?'active':''}" data-sales-tab="monthly">${t('salesTabMonthly')}</button>
-      <button class="tab-btn ${state.salesTab==='yearly'?'active':''}" data-sales-tab="yearly">${t('salesTabYearly')}</button>
-    </div>
-    <div class="section-bar">
-      <div class="date-nav">
-        <button class="icon-btn" id="salesYearPrev" title="${t('prevDay')}">${icon('arrowLeft')}</button>
-        <div class="date-label">${escapeHtml(year)}<small>${t('salesTabYearly')}</small></div>
-        <button class="icon-btn" id="salesYearNext" title="${t('nextDay')}">${icon('arrowRight')}</button>
-        <input type="number" class="date-select" id="salesYearSelect" min="2000" max="2100" step="1" value="${escapeHtml(year)}" style="width:120px">
-      </div>
-      <div class="sales-period-tools">
-        <div class="sales-total-box"><span>${t('totalSalesLabel')}</span><b>${fmtMoney(total)}</b></div>
-        <button class="btn ghost sm" id="salesShareWhatsapp">${icon('whatsapp')} ${t('shareSalesWhatsappBtn')}</button>
-        <button class="btn ghost sm" id="salesExportPdf">${icon('download')} ${t('exportPdfBtn')}</button>
-        <button class="btn ghost sm" id="salesExportExcel">${icon('download')} ${t('exportExcelBtn')}</button>
-      </div>
-    </div>
-    ${staffKeyBar}
-    <div class="panel">
-      <div class="table-wrap">
-      <table>
-        <thead><tr><th>${t('salesTableStaff')}</th><th class="num">${t('salesTableSale')}</th><th>${t('salesTableDate')}</th><th>${t('salesTableTime')}</th><th></th></tr></thead>
-        <tbody>
-          ${rows.length ? rows.map(r => {
-            const st = getStaff(r.staffId);
-            return `<tr>
-              <td><div class="cell-name"><span class="avatar">${st?escapeHtml(st.keyword):'?'}</span>${st ? escapeHtml(st.name) : (r.staffId ? `<span class="muted">${t('removedStaff')}</span>` : `<span class="muted">${t('unknownSaleStaff')}</span>`)}</div></td>
-              <td class="num">${fmtMoney(r.amount)}</td>
-              <td class="muted">${formatDateShort(r.date)}</td>
-              <td class="muted" style="font-family:var(--mono);font-size:12.5px">${r.time}</td>
-              <td><div class="row-actions"><button data-edit-sale="${r.id}" title="${t('attEdit')}">${icon('edit')}</button><button class="del" data-del-sale="${r.id}" title="${t('deleteBtn')}">${icon('trash')}</button></div></td>
-            </tr>`;
-          }).join('') : `<tr class="empty-row"><td colspan="5">${emptyStateHtml('inbox',t('noSalesDate'),'')}</td></tr>`}
-        </tbody>
-      </table>
-      </div>
-      <div class="totals-strip">
-        <div class="lead">${t('totalSalesLabel')} <b>${fmtMoney(total)}</b></div>
-        ${Object.entries(byStaff).map(([sid,amt])=>{ const st=getStaff(sid); return st ? `<div>${escapeHtml(st.name)} <b>${fmtMoney(amt)}</b></div>` : ''; }).join('')}
-      </div>
-    </div>
-  `;
-  bindSalesCommon(root);
-  root.querySelector('#salesYearPrev').addEventListener('click', ()=>{ state.salesYear = String(Number(state.salesYear)-1); render(); });
-  root.querySelector('#salesYearNext').addEventListener('click', ()=>{ state.salesYear = String(Number(state.salesYear)+1); render(); });
-  root.querySelector('#salesYearSelect').addEventListener('change', e => { const y=Number(e.target.value); if(y>=2000 && y<=2100){ state.salesYear=String(y); render(); } });
-  root.querySelector('#salesShareWhatsapp').addEventListener('click', ()=>shareSalesTextOnWhatsApp(rows, `yearly-${year}`));
-  root.querySelector('#salesExportPdf').addEventListener('click', ()=>exportSalesList('pdf', rows, `yearly-${year}`));
-  root.querySelector('#salesExportExcel').addEventListener('click', ()=>exportSalesList('excel', rows, `yearly-${year}`));
-}
-function pdfSafeText(value){
-  return String(value == null ? '' : value)
-    .replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')
-    .replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');
-}
-function buildSalesPdfBlob(rows, period){
-  const title = `${DB.settings.businessName || 'Pharmacy Records'} — ${t('navSales')}`;
-  const total = rows.reduce((sum,r)=>sum + (Number(r.amount)||0), 0);
-  const lines = [];
-  lines.push(title);
-  lines.push(`Period: ${period}`);
-  lines.push('');
-  lines.push('No.   Staff                         Sale              Date        Time');
-  lines.push('--------------------------------------------------------------------------');
-  rows.forEach((r,i)=>{
-    const st=getStaff(r.staffId);
-    const name=st ? st.name : (r.staffId ? t('removedStaff') : t('unknownSaleStaff'));
-    const sale=fmtMoney(r.amount);
-    lines.push(`${String(i+1).padEnd(5)} ${String(name).slice(0,29).padEnd(30)} ${sale.padStart(16)}  ${String(r.date||'').padEnd(10)}  ${String(r.time||'')}`);
-  });
-  lines.push('');
-  lines.push(`Total sales: ${fmtMoney(total)}`);
-
-  const esc = v => pdfSafeText(v);
-  const content=[];
-  let y=800;
-  content.push('BT /F1 15 Tf 40 800 Td');
-  lines.forEach((line,idx)=>{
-    if(idx===0){ content.push(`(${esc(line)}) Tj`); }
-    else { content.push('0 -18 Td'); content.push(`/F1 ${idx===1 ? 10 : 9} Tf (${esc(line)}) Tj`); }
-  });
-  content.push('ET');
-  const stream=content.join('\\n');
-  const objects=[];
-  objects.push('<< /Type /Catalog /Pages 2 0 R >>');
-  objects.push('<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
-  objects.push('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>');
-  objects.push(`<< /Length ${stream.length} >>\\nstream\\n${stream}\\nendstream`);
-  objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
-  let pdf='%PDF-1.4\\n';
-  const offsets=[0];
-  objects.forEach((obj,i)=>{ offsets[i+1]=pdf.length; pdf += `${i+1} 0 obj\\n${obj}\\nendobj\\n`; });
-  const xref=pdf.length;
-  pdf += `xref\\n0 ${objects.length+1}\\n0000000000 65535 f \\n`;
-  for(let i=1;i<=objects.length;i++) pdf += `${String(offsets[i]).padStart(10,'0')} 00000 n \\n`;
-  pdf += `trailer\\n<< /Size ${objects.length+1} /Root 1 0 R >>\\nstartxref\\n${xref}\\n%%EOF`;
-  return new Blob([pdf],{type:'application/pdf'});
-}
-function shareSalesTextOnWhatsApp(rows, period){
-  if(!rows.length){ toast(t('shareSalesWhatsappNoSales'), true); return; }
-  const title = DB.settings.businessName || 'Pharmacy Records';
-  const total = rows.reduce((sum,r)=>sum + (Number(r.amount)||0), 0);
-  const lines = [
-    `*${title}*`,
-    `*${t('navSales')} — ${period}*`,
-    ''
-  ];
-  rows.forEach((r,i)=>{
-    const st = getStaff(r.staffId);
-    const staffName = st ? st.name : (r.staffId ? t('removedStaff') : t('unknownSaleStaff'));
-    lines.push(`${i+1}. ${staffName} — ${fmtMoney(r.amount)} — ${formatDateShort(r.date)} ${r.time || ''}`.trim());
-  });
-  lines.push('', `*${t('totalSalesLabel')}: ${fmtMoney(total)}*`);
-  const wa = `https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`;
-  window.open(wa, '_blank', 'noopener,noreferrer');
-  toast(t('shareSalesWhatsappFallback'));
-}
-
-function exportSalesList(format, rows, period){
-  if (!rows.length){ toast(t('exportNoSales'), true); return; }
-  const total = rows.reduce((s,r)=>s+r.amount,0);
-  const title = `${DB.settings.businessName || 'Pharmacy Records'} — ${t('navSales')}`;
-  if (format === 'excel'){
-    const tableRows = rows.map((r,i)=>{ const st=getStaff(r.staffId); return `<tr><td>${i+1}</td><td>${escapeHtml(st ? st.name : (r.staffId ? t('removedStaff') : t('unknownSaleStaff')))}</td><td>${escapeHtml(String(r.amount))}</td><td>${escapeHtml(r.date||'')}</td><td>${escapeHtml(r.time||'')}</td></tr>`; }).join('');
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>table{border-collapse:collapse;font-family:Arial}th,td{border:1px solid #ccc;padding:6px 10px}th{font-weight:700}</style></head><body><h2>${escapeHtml(title)}</h2><table><thead><tr><th>${escapeHtml(t('exportNo'))}</th><th>${escapeHtml(t('salesTableStaff'))}</th><th>${escapeHtml(t('salesTableSale'))}</th><th>${escapeHtml(t('salesTableDate'))}</th><th>${escapeHtml(t('salesTableTime'))}</th></tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2"><b>${escapeHtml(t('totalSalesLabel'))}</b></td><td><b>${escapeHtml(total.toFixed(2))}</b></td><td colspan="2"></td></tr></tfoot></table></body></html>`;
-    downloadTextFile(`sales-${period}.xls`, html, 'application/vnd.ms-excel;charset=utf-8');
-    toast(t('exportDownloaded'));
-    return;
-  }
-  const printWin = window.open('', '_blank');
-  if (!printWin){ toast(t('exportPopupBlocked'), true); return; }
-  const tableRows = rows.map((r,i)=>{ const st=getStaff(r.staffId); return `<tr><td>${i+1}</td><td>${escapeHtml(st ? st.name : (r.staffId ? t('removedStaff') : t('unknownSaleStaff')))}</td><td class="num">${escapeHtml(fmtMoney(r.amount))}</td><td>${escapeHtml(formatDateShort(r.date))}</td><td>${escapeHtml(r.time||'')}</td></tr>`; }).join('');
-  printWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(title)}</title><style>body{font-family:Arial,sans-serif;color:#111;margin:28px}h1{font-size:22px;margin:0 0 4px}.meta{color:#555;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f3f4f6}.num{text-align:right}.total{margin-top:14px;text-align:right;font-weight:700}@media print{button{display:none}}</style></head><body><button onclick="window.print()" style="float:right;padding:8px 12px;margin-bottom:12px">${escapeHtml(t('exportPdfBtn'))}</button><h1>${escapeHtml(title)}</h1><div class="meta">${escapeHtml(period)}</div><table><thead><tr><th>${escapeHtml(t('exportNo'))}</th><th>${escapeHtml(t('salesTableStaff'))}</th><th>${escapeHtml(t('salesTableSale'))}</th><th>${escapeHtml(t('salesTableDate'))}</th><th>${escapeHtml(t('salesTableTime'))}</th></tr></thead><tbody>${tableRows}</tbody></table><div class="total">${escapeHtml(t('totalSalesLabel'))} ${escapeHtml(fmtMoney(total))}</div><script>window.onload=function(){setTimeout(function(){window.print()},200)}<\/script></body></html>`);
-  printWin.document.close();
+  root.querySelectorAll('[data-edit-sale]').forEach(b => b.addEventListener('click', () => openEditSaleModal(b.dataset.editSale)));
+  root.querySelectorAll('[data-del-sale]').forEach(b => b.addEventListener('click', () => confirmDeleteSale(b.dataset.delSale)));
 }
 function dateLabelHtml(iso){
   const d = new Date(iso+'T00:00:00');
@@ -60048,47 +59743,6 @@ function openSaleModal(staff){
     onClose(){ state.saleModalStaffId = null; }
   });
 }
-function openUnknownSaleModal(){
-  state.saleModalStaffId = null;
-  openModal({
-    title:t('recordSaleTitle'),
-    bodyHtml:`
-      <div id="saleModalContent">
-        <div class="sale-head">
-          <span class="avatar lg">?</span>
-          <div>
-            <div class="sale-staff-name">${t('unknownSaleStaff')}</div>
-            <div class="sale-staff-sub">${t('typeAmountHint')} <span class="kbd">Enter</span>.</div>
-          </div>
-        </div>
-        <div class="sale-amount-wrap">
-          <span class="cur">${escapeHtml(DB.settings.currency||'৳')}</span>
-          <input type="number" class="sale-amount-input" id="saleAmountInput" placeholder="0.00" min="0" step="0.01" autocomplete="off" inputmode="decimal">
-        </div>
-        <div class="field-error" id="saleModalErr"></div>
-      </div>
-    `,
-    footHtml:`<button class="btn" data-close>${t('cancelBtn')}</button>`,
-    onMount(modalEl){
-      const input = modalEl.querySelector('#saleAmountInput');
-      input.focus();
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter'){
-          e.preventDefault();
-          const res = recordSale(null, input.value);
-          if (!res.ok){
-            modalEl.querySelector('#saleModalErr').textContent = res.error;
-            return;
-          }
-          closeModal();
-          render();
-          toast(t('toastSaleRecorded',{amt:fmtMoney(res.sale.amount), name:t('unknownSaleStaff')}));
-        }
-      });
-    },
-    onClose(){ state.saleModalStaffId = null; }
-  });
-}
 function switchSaleStaff(staff){
   state.saleModalStaffId = staff.id;
   const nameEl = document.getElementById('saleStaffName');
@@ -60113,7 +59767,7 @@ function renderAttendance(root){
   const today = todayISO();
   const monthTitle = monthLabelLong(ym);
   const makeDate = day => `${ym}-${String(day).padStart(2,'0')}`;
-  const isEditableDate = date => state.attendanceUnlocked || date === today;
+  const isPast = date => date < today;
 
   root.innerHTML = `
     <div class="section-bar">
@@ -60123,43 +59777,33 @@ function renderAttendance(root){
         <button class="icon-btn" id="attMonthNext" title="${t('nextMonth') || 'Next month'}">${icon('arrowRight')}</button>
         <input type="month" id="attMonthSelect" value="${ym}" aria-label="Select attendance month">
       </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <button class="btn" id="attToday">${icon('calendar')} Today</button>
-        <button class="btn" id="attLockToggle">${icon(state.attendanceUnlocked ? 'unlock' : 'lock')} ${state.attendanceUnlocked ? t('attLock') : t('attUnlock')}</button>
-      </div>
+      <button class="btn" id="attToday">${icon('calendar')} Today</button>
     </div>
-    <div class="panel attendance-panel">
-      <div class="table-wrap attendance-table-wrap">
-      <table class="attendance-table" style="min-width:${Math.max(720, 180 + staffList.length * 145)}px;">
+    <div class="panel" style="overflow-x:auto;">
+      <table style="min-width:${Math.max(720, 180 + staffList.length * 145)}px;">
         <thead>
           <tr>
-            <th class="attendance-sticky-head" style="position:sticky;left:0;background:var(--surface-2);z-index:12;">Date</th>
-            ${staffList.map(s => `<th class="attendance-sticky-head" style="text-align:center;">${escapeHtml(s.name)}</th>`).join('')}
+            <th style="position:sticky;left:0;background:var(--panel,#fff);z-index:2;">Date</th>
+            ${staffList.map(s => `<th style="text-align:center;">${escapeHtml(s.name)}</th>`).join('')}
           </tr>
         </thead>
         <tbody>
           ${Array.from({length:daysInMonth}, (_,i) => i+1).map(day => {
             const date = makeDate(day);
-            const isToday = date === today;
             const label = new Date(date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-            const rowStyle = isToday ? 'background:var(--accent-soft);' : '';
-            const dateStyle = `position:sticky;left:0;${isToday ? 'background:var(--accent-soft);' : 'background:var(--panel,#fff);'}z-index:1;white-space:nowrap;`;
-            return `<tr style="${rowStyle}" ${isToday ? 'data-att-today-row="true"' : ''}>
-              <td style="${dateStyle}"><strong>${label}</strong><div class="muted" style="font-size:11px;">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'})}</div></td>
+            return `<tr>
+              <td style="position:sticky;left:0;background:var(--panel,#fff);z-index:1;white-space:nowrap;"><strong>${label}</strong><div class="muted" style="font-size:11px;">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'})}</div></td>
               ${staffList.map(staff => {
                 const record = findAttendance(staff.id, date);
                 const storedStatus = record ? record.status : null;
-                const displayStatus = storedStatus || (date < today ? 'auto-absent' : 'pending');
-                const editable = isEditableDate(date);
-                const disabledAttr = editable ? '' : 'disabled';
-                const title = editable ? '' : ` title="${escapeHtml(t('attLockedPastFuture'))}"`;
+                const displayStatus = storedStatus || (isPast(date) ? 'auto-absent' : 'pending');
                 let content = '';
                 if (displayStatus === 'present') {
-                  content = `<button class="attend-btn" ${disabledAttr}${title} style="background:#dcfce7;color:#166534;border-color:#86efac;" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="present">✓ Present</button>`;
+                  content = `<button class="attend-btn" style="background:#dcfce7;color:#166534;border-color:#86efac;" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="present">✓ Present</button>`;
                 } else if (displayStatus === 'absent' || displayStatus === 'auto-absent') {
-                  content = `<button class="attend-btn" ${disabledAttr}${title} style="background:#fee2e2;color:#b91c1c;border-color:#fca5a5;" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="absent">Absent</button>`;
+                  content = `<button class="attend-btn" style="background:#fee2e2;color:#b91c1c;border-color:#fca5a5;" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="absent">Absent</button>`;
                 } else {
-                  content = `<button class="attend-btn" ${disabledAttr}${title} data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="pending">Present</button>`;
+                  content = `<button class="attend-btn" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="pending">Present</button>`;
                 }
                 return `<td style="text-align:center;">${content}</td>`;
               }).join('')}
@@ -60167,24 +59811,9 @@ function renderAttendance(root){
           }).join('') || `<tr><td colspan="${staffList.length+1}">${t('attNoActiveStaff')}</td></tr>`}
         </tbody>
       </table>
-      </div>
     </div>
-    <div class="note-text" style="margin-top:10px;">${state.attendanceUnlocked ? t('attNoteText') : t('attUnlockHint')}</div>
+    <div class="note-text" style="margin-top:10px;">Unmarked past dates are shown as absent. Clicking a cell records attendance and updates salary expenses through the existing attendance system.</div>
   `;
-
-  // When the Attendance panel is opened, smoothly bring today's row to
-  // the middle of the visible content area without affecting table data.
-  if (state.attendanceFocusToday){
-    state.attendanceFocusToday = false;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const todayRow = root.querySelector('[data-att-today-row="true"]');
-        if (todayRow){
-          todayRow.scrollIntoView({ behavior:'smooth', block:'center', inline:'nearest' });
-        }
-      });
-    });
-  }
 
   root.querySelector('#attMonthPrev').addEventListener('click', ()=>{
     const nextYm = addMonths(ym,-1);
@@ -60203,24 +59832,9 @@ function renderAttendance(root){
     state.attendanceDate = todayISO();
     render();
   });
-  root.querySelector('#attLockToggle').addEventListener('click', ()=>{
-    if (state.attendanceUnlocked){
-      state.attendanceUnlocked = false;
-      render();
-      return;
-    }
-    requireAdmin(() => {
-      state.attendanceUnlocked = true;
-      render();
-    }, t('authRequired'));
-  });
   root.querySelectorAll('[data-att-toggle]').forEach(button => button.addEventListener('click', ()=>{
     const staffId = button.dataset.attToggle;
     const date = button.dataset.attDate;
-    if (!state.attendanceUnlocked && date !== todayISO()){
-      toast(t('attLockedPastFuture'), true);
-      return;
-    }
     const current = findAttendance(staffId,date);
     const nextStatus = current && current.status === 'present' ? 'absent' : 'present';
     setAttendance(staffId,date,nextStatus);
@@ -60326,106 +59940,42 @@ function openMonthlySummaryModal(){
 ========================================================= */
 function renderExpense(root){
   const tab = state.expenseTab;
-  const period = state.expensePeriod || 'daily';
   const date = state.expenseDates[tab];
-  const month = state.expenseMonths[tab] || monthKey(date);
-  const year = state.expenseYears[tab] || String(new Date().getFullYear());
-  const range = expensePeriodRange(period, date, month, year);
-  const periodLabel = expensePeriodLabel(period, date, month, year);
-  const total = expensesForPeriod(range.start, range.end, EXPENSE_TYPES[tab.toUpperCase()]).reduce((s,r)=>s+moneyValue(r.amount),0);
-  const count = expensesForPeriod(range.start, range.end, EXPENSE_TYPES[tab.toUpperCase()]).length;
 
   root.innerHTML = `
-    <div class="tab-row expense-tabs">
+    <div class="tab-row">
       <button class="tab-btn ${tab==='purchase'?'active':''}" data-tab="purchase">${t('tabPurchase')}</button>
       <button class="tab-btn ${tab==='business'?'active':''}" data-tab="business">${t('tabBusiness')}</button>
       <button class="tab-btn ${tab==='home'?'active':''}" data-tab="home">${t('tabHome')}</button>
     </div>
-    <div class="expense-period-row">
-      <div class="expense-period-switch" aria-label="Expense period">
-        <button class="expense-period-btn ${period==='daily'?'active':''}" data-period="daily">${t('expenseDaily')}</button>
-        <button class="expense-period-btn ${period==='monthly'?'active':''}" data-period="monthly">${t('expenseMonthly')}</button>
-        <button class="expense-period-btn ${period==='yearly'?'active':''}" data-period="yearly">${t('expenseYearly')}</button>
-      </div>
-      <div class="expense-summary-card">
-        <div class="expense-summary-icon">${icon('wallet')}</div>
-        <div><span>${t('expensePeriodTotal')}</span><b>${fmtMoney(total)}</b></div>
-        <em>${count} ${count===1?t('expEntry'):t('expEntries')}</em>
-      </div>
-    </div>
-    <div class="section-bar expense-section-bar">
+    <div class="section-bar">
       <div class="date-nav">
-        <button class="icon-btn" id="expPrev" title="Previous">${icon('arrowLeft')}</button>
-        <div class="date-label expense-period-label">${escapeHtml(periodLabel.label)}<small>${escapeHtml(periodLabel.sub)}</small></div>
-        <button class="icon-btn" id="expNext" title="Next">${icon('arrowRight')}</button>
-        ${period==='daily' ? dateSelectHtml('expDateSelect', date) : period==='monthly'
-          ? `<input class="expense-period-input" id="expMonthSelect" type="month" value="${escapeHtml(month)}" aria-label="Month">`
-          : `<select class="expense-period-input" id="expYearSelect" aria-label="Year">${expenseYearOptions(year)}</select>`}
+        <button class="icon-btn" id="expPrev" title="${t('prevDay')}">${icon('arrowLeft')}</button>
+        ${dateLabelHtml(date)}
+        <button class="icon-btn" id="expNext" title="${t('nextDay')}">${icon('arrowRight')}</button>
+        ${dateSelectHtml('expDateSelect', date)}
       </div>
-      <div class="hero-actions expense-export-actions">
-        <button class="btn sm" id="shareExpenseWhatsapp">${icon('whatsapp')} ${t('shareWhatsappBtn')}</button>
-        <button class="btn primary sm" id="exportExpensePdf">${icon('download')} ${t('exportPdfBtn')}</button>
-        <button class="btn sm" id="exportExpenseExcel">${icon('file')} ${t('exportExcelBtn')}</button>
-        <button class="btn sm" id="exportExpenseCsv">CSV</button>
-      </div>
+      ${tab === 'purchase' ? `<div class="hero-actions">
+        <button class="btn primary sm" id="exportPurchasePdf">${icon('download')} ${t('exportPdfBtn')}</button>
+        <button class="btn sm" id="exportPurchaseCsv">CSV</button>
+        <button class="btn sm" id="exportPurchaseTxt">TXT</button>
+      </div>` : ''}
     </div>
     <div id="expQuickEntry"></div>
     <div id="expenseTableWrap"></div>
   `;
-
   root.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', ()=>{ state.expenseTab = b.dataset.tab; render(); }));
-  root.querySelectorAll('[data-period]').forEach(b => b.addEventListener('click', ()=>{ state.expensePeriod = b.dataset.period; render(); }));
-  root.querySelector('#expPrev').addEventListener('click', ()=>{
-    if(period==='daily') state.expenseDates[tab] = addDays(date,-1);
-    else if(period==='monthly') state.expenseMonths[tab] = addMonths(month,-1);
-    else state.expenseYears[tab] = String(Number(year)-1);
-    render();
-  });
-  root.querySelector('#expNext').addEventListener('click', ()=>{
-    if(period==='daily') state.expenseDates[tab] = addDays(date,1);
-    else if(period==='monthly') state.expenseMonths[tab] = addMonths(month,1);
-    else state.expenseYears[tab] = String(Number(year)+1);
-    render();
-  });
-  const dateSelect = root.querySelector('#expDateSelect');
-  if(dateSelect) dateSelect.addEventListener('change', e => { state.expenseDates[tab] = e.target.value; render(); });
-  const monthSelect = root.querySelector('#expMonthSelect');
-  if(monthSelect) monthSelect.addEventListener('change', e => { if(e.target.value) state.expenseMonths[tab] = e.target.value; render(); });
-  const yearSelect = root.querySelector('#expYearSelect');
-  if(yearSelect) yearSelect.addEventListener('change', e => { state.expenseYears[tab] = e.target.value; render(); });
-
-  root.querySelector('#shareExpenseWhatsapp').addEventListener('click', () => shareExpenseOnWhatsApp(tab, period, range));
-  root.querySelector('#exportExpensePdf').addEventListener('click', () => exportExpenseList('pdf', tab, period, range));
-  root.querySelector('#exportExpenseExcel').addEventListener('click', () => exportExpenseList('excel', tab, period, range));
-  root.querySelector('#exportExpenseCsv').addEventListener('click', () => exportExpenseList('csv', tab, period, range));
+  root.querySelector('#expPrev').addEventListener('click', ()=>{ state.expenseDates[tab] = addDays(date,-1); render(); });
+  root.querySelector('#expNext').addEventListener('click', ()=>{ state.expenseDates[tab] = addDays(date,1); render(); });
+  root.querySelector('#expDateSelect').addEventListener('change', e => { state.expenseDates[tab] = e.target.value; render(); });
+  if (tab === 'purchase'){
+    root.querySelector('#exportPurchasePdf').addEventListener('click', () => exportPurchaseList('pdf', date));
+    root.querySelector('#exportPurchaseCsv').addEventListener('click', () => exportPurchaseList('csv', date));
+    root.querySelector('#exportPurchaseTxt').addEventListener('click', () => exportPurchaseList('txt', date));
+  }
 
   mountExpenseQuickEntry(root.querySelector('#expQuickEntry'), tab, date, root.querySelector('#expenseTableWrap'));
-  renderExpenseTable(root.querySelector('#expenseTableWrap'), tab, date, period, range);
-}
-
-function expensePeriodRange(period, date, month, year){
-  if(period==='daily') return { start:date, end:date };
-  if(period==='monthly'){
-    const start = month + '-01';
-    const end = addDays(addMonths(month,1) + '-01', -1);
-    return { start, end };
-  }
-  return { start:`${year}-01-01`, end:`${year}-12-31` };
-}
-function expensePeriodLabel(period, date, month, year){
-  if(period==='daily') return { label:formatDateLong(date), sub:date===todayISO()?t('dateToday'):t('expenseDaily') };
-  if(period==='monthly') return { label:monthLabelLong(month), sub:t('expenseMonthly') };
-  return { label:String(year), sub:t('expenseYearly') };
-}
-function expenseYearOptions(current){
-  const y=Number(current)||new Date().getFullYear();
-  let out='';
-  for(let i=y-6;i<=y+6;i++) out += `<option value="${i}" ${String(i)===String(current)?'selected':''}>${i}</option>`;
-  return out;
-}
-function expensesForPeriod(start, end, type){
-  return DB.expenses.filter(e => e.type===type && e.date>=start && e.date<=end)
-    .sort((a,b)=> b.date===a.date ? (b.timestamp||0)-(a.timestamp||0) : String(b.date).localeCompare(String(a.date)));
+  renderExpenseTable(root.querySelector('#expenseTableWrap'), tab, date);
 }
 
 function mountExpenseQuickEntry(container, tab, date, tableWrap){
@@ -60438,7 +59988,7 @@ function mountExpenseQuickEntry(container, tab, date, tableWrap){
           <div class="qe-field w-md"><label>${t('expUnitLabel')}</label><select id="qeUnit">${PURCHASE_UNITS.map(u=>`<option>${u}</option>`).join('')}</select></div>
           <div class="qe-field w-sm"><label>${t('expQtyLabel')}</label><input id="qeQty" type="number" min="0" step="1" placeholder="0"></div>
           <div class="qe-field w-sm"><label>${t('expPriceLabel')}</label><input id="qePrice" type="number" min="0" step="0.01" placeholder="0.00"></div>
-          <span id="qePurchaseTotal" class="qe-total-preview"></span> <button class="qe-save" id="qeSave">${icon('plus')} ${t('saveBtn')}</button>
+          <button class="qe-save" id="qeSave">${icon('plus')} ${t('saveBtn')}</button>
         </div>
         <div class="qe-error" id="qeErr"></div>
         <div class="qe-hint">${t('qeEnterHint')}</div>
@@ -60449,13 +59999,6 @@ function mountExpenseQuickEntry(container, tab, date, tableWrap){
     const qty  = container.querySelector('#qeQty');
     const price= container.querySelector('#qePrice');
     const err  = container.querySelector('#qeErr');
-    const updatePurchasePreview = () => {
-      const total = (Number(qty.value)||0) * (Number(price.value)||0);
-      const preview = container.querySelector('#qePurchaseTotal');
-      if (preview) preview.textContent = total > 0 ? `${t('total')}: ${fmtMoney(total)}` : '';
-    };
-    qty.addEventListener('input', updatePurchasePreview);
-    price.addEventListener('input', updatePurchasePreview);
     prod.focus();
     function saveEntry(){
       const p = prod.value.trim();
@@ -60465,7 +60008,7 @@ function mountExpenseQuickEntry(container, tab, date, tableWrap){
       addExpense({ type:EXPENSE_TYPES.PURCHASE, description:p, unit:unit.value, quantity:Number(qty.value)||0, amount:Number(pr)||0, date, category:'Purchase' });
       prod.value=''; qty.value=''; price.value='';
       prod.focus();
-      renderExpenseTable(tableWrap, 'purchase', date, state.expensePeriod || 'daily', expensePeriodRange(state.expensePeriod || 'daily', date, state.expenseMonths[tab] || monthKey(date), state.expenseYears[tab] || String(new Date().getFullYear())));
+      renderExpenseTable(tableWrap, 'purchase', date);
       flashSaved(err);
     }
     container.querySelector('#qeSave').addEventListener('click', saveEntry);
@@ -60503,7 +60046,7 @@ function mountExpenseQuickEntry(container, tab, date, tableWrap){
       addExpense({ type:EXPENSE_TYPES.BUSINESS, description:d, category:cat.value, amount:Number(a), date, note:note.value.trim() });
       desc.value=''; amt.value=''; note.value='';
       desc.focus();
-      renderExpenseTable(tableWrap, 'business', date, state.expensePeriod || 'daily', expensePeriodRange(state.expensePeriod || 'daily', date, state.expenseMonths[tab] || monthKey(date), state.expenseYears[tab] || String(new Date().getFullYear())));
+      renderExpenseTable(tableWrap, 'business', date);
       flashSaved(err);
     }
     container.querySelector('#qeSave').addEventListener('click', saveEntry);
@@ -60537,7 +60080,7 @@ function mountExpenseQuickEntry(container, tab, date, tableWrap){
       addExpense({ type:EXPENSE_TYPES.HOME, description:d, amount:Number(a), date, note:note.value.trim(), category:'Home' });
       desc.value=''; amt.value=''; note.value='';
       desc.focus();
-      renderExpenseTable(tableWrap, 'home', date, state.expensePeriod || 'daily', expensePeriodRange(state.expensePeriod || 'daily', date, state.expenseMonths[tab] || monthKey(date), state.expenseYears[tab] || String(new Date().getFullYear())));
+      renderExpenseTable(tableWrap, 'home', date);
       flashSaved(err);
     }
     container.querySelector('#qeSave').addEventListener('click', saveEntry);
@@ -60556,7 +60099,7 @@ function purchaseRowsForExport(date){
     product: r.description || '',
     unit: r.unit || '',
     quantity: Number(r.quantity) || 0,
-    price: purchaseLineTotal(r),
+    price: Number(r.amount) || 0,
     date: r.date || date
   }));
 }
@@ -60619,82 +60162,25 @@ function exportPurchaseList(format, date){
   printWin.document.close();
   toast(t('exportPdfReady'));
 }
-function shareExpenseOnWhatsApp(tab, period, range){
-  const type = EXPENSE_TYPES[tab.toUpperCase()];
-  const rows = expensesForPeriod(range.start, range.end, type);
-  if(!rows.length){ toast(t('shareWhatsappNoExpense'), true); return; }
-  const total = tab === 'purchase' ? rows.reduce((sum,r)=>sum+purchaseLineTotal(r),0) : rows.reduce((sum,r)=>sum+moneyValue(r.amount),0);
-  const title = DB.settings.businessName || 'Pharmacy Records';
-  const typeLabel = t(tab==='purchase'?'tabPurchase':tab==='business'?'tabBusiness':'tabHome');
-  const periodLabel = period==='daily' ? formatDateLong(range.start) : period==='monthly' ? monthLabelLong(range.start.slice(0,7)) : range.start.slice(0,4);
-  const lines = rows.map((r,i)=>{
-    const datePart = period==='daily' ? '' : ` — ${r.date||''}`;
-    const desc = r.description || r.note || '—';
-    return `${i+1}. ${desc}${datePart} — ${fmtMoney(tab==='purchase' ? purchaseLineTotal(r) : moneyValue(r.amount))}`;
-  });
-  const message = [
-    `*${title}*`,
-    `${typeLabel} — ${periodLabel}`,
-    '',
-    ...lines,
-    '',
-    `*${t('total')}: ${fmtMoney(total)}*`
-  ].join('\n');
-  const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
-
-function exportExpenseList(format, tab, period, range){
-  const type = EXPENSE_TYPES[tab.toUpperCase()];
-  const rows = expensesForPeriod(range.start, range.end, type);
-  if(!rows.length){ toast(t('exportNoExpensePeriod'), true); return; }
-  const total = tab === 'purchase' ? rows.reduce((s,r)=>s+purchaseLineTotal(r),0) : rows.reduce((s,r)=>s+moneyValue(r.amount),0);
-  const title = `${DB.settings.businessName || 'Pharmacy Records'} — ${t(tab==='purchase'?'tabPurchase':tab==='business'?'tabBusiness':'tabHome')}`;
-  const periodLabel = period==='daily' ? formatDateLong(range.start) : period==='monthly' ? monthLabelLong(range.start.slice(0,7)) : range.start.slice(0,4);
-  const headers = tab==='purchase' ? [t('exportNo'),t('expProduct'),t('expUnit'),t('expQty'),t('expPrice'),t('salesTableDate')] : tab==='business' ? [t('exportNo'),t('expDesc'),t('expCat'),t('expAmount'),t('salesTableDate')] : [t('exportNo'),t('expItemDesc'),t('expAmount'),t('expNote'),t('salesTableDate')];
-  const data = rows.map((r,i)=> tab==='purchase'
-    ? [i+1,r.description||'',r.unit||'',Number(r.quantity)||0,purchaseLineTotal(r),r.date||'']
-    : tab==='business' ? [i+1,r.description||'',r.category||'',Number(r.amount)||0,r.date||'']
-    : [i+1,r.description||'',Number(r.amount)||0,r.note||'',r.date||'']);
-  if(format==='csv'){
-    const lines=[headers.map(csvCell).join(',')].concat(data.map(row=>row.map(csvCell).join(','))).concat(['', [t('total'),'',total.toFixed(2)].map(csvCell).join(',')]);
-    downloadTextFile(`expense-${tab}-${period}-${range.start}.csv`, lines.join('\n'),'text/csv;charset=utf-8');
-    toast(t('exportDownloaded')); return;
-  }
-  if(format==='excel'){
-    const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:7px 9px}th{background:#f3f4f6;text-align:left}.num{text-align:right}</style></head><body><h2>${escapeHtml(title)}</h2><p>${escapeHtml(periodLabel)}</p><table><thead><tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join('')}</tr></thead><tbody>${data.map(row=>`<tr>${row.map((v,i)=>`<td class="${typeof v==='number'?'num':''}">${escapeHtml(String(v))}</td>`).join('')}</tr>`).join('')}</tbody><tfoot><tr><td colspan="${Math.max(1,headers.length-2)}"><b>${escapeHtml(t('total'))}</b></td><td><b>${escapeHtml(total.toFixed(2))}</b></td><td></td></tr></tfoot></table></body></html>`;
-    downloadTextFile(`expense-${tab}-${period}-${range.start}.xls`,html,'application/vnd.ms-excel;charset=utf-8');
-    toast(t('exportDownloaded')); return;
-  }
-  const printWin=window.open('','_blank');
-  if(!printWin){ toast(t('exportPopupBlocked'),true); return; }
-  printWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(title)}</title><style>body{font-family:Arial,sans-serif;color:#111;margin:28px}h1{font-size:22px;margin:0 0 4px}.meta{color:#555;margin-bottom:18px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f3f4f6}.num{text-align:right}.total{margin-top:14px;text-align:right;font-weight:700}@media print{button{display:none}}</style></head><body><button onclick="window.print()" style="float:right;padding:8px 12px;margin-bottom:12px">${escapeHtml(t('exportPdfBtn'))}</button><h1>${escapeHtml(title)}</h1><div class="meta">${escapeHtml(periodLabel)}</div><table><thead><tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join('')}</tr></thead><tbody>${data.map(row=>`<tr>${row.map((v,i)=>`<td class="${typeof v==='number'?'num':''}">${escapeHtml(String(v))}</td>`).join('')}</tr>`).join('')}</tbody></table><div class="total">${escapeHtml(t('total'))}: ${escapeHtml(fmtMoney(total))}</div><script>window.onload=function(){setTimeout(function(){window.print()},200)}<\/script></body></html>`);
-  printWin.document.close(); toast(t('exportPdfReady'));
-}
-function renderExpenseTable(container, tab, date, period='daily', range=null){
-  range = range || expensePeriodRange(period, date, monthKey(date), String(new Date().getFullYear()));
-  const rows = expensesForPeriod(range.start, range.end, EXPENSE_TYPES[tab.toUpperCase()]);
-  const total = tab === 'purchase' ? rows.reduce((s,r)=>s+purchaseLineTotal(r),0) : rows.reduce((s,r)=>s+moneyValue(r.amount),0);
-  const showDate = period !== 'daily';
-  const dateHead = showDate ? `<th>${t('salesTableDate')}</th>` : '';
-  const dateCell = r => showDate ? `<td>${escapeHtml(formatDateShort(r.date))}</td>` : '';
+function renderExpenseTable(container, tab, date){
+  const rows = expensesForDate(date, EXPENSE_TYPES[tab.toUpperCase()]);
+  const total = rows.reduce((s,r)=>s+r.amount,0);
 
   if (tab === 'purchase'){
     container.innerHTML = `
       <div class="panel">
         <table>
-          <thead><tr><th>${t('expProduct')}</th><th>${t('expUnit')}</th><th class="num">${t('expQty')}</th><th class="num">${t('expPrice')}</th>${dateHead}<th></th></tr></thead>
+          <thead><tr><th>${t('expProduct')}</th><th>${t('expUnit')}</th><th class="num">${t('expQty')}</th><th class="num">${t('expPrice')}</th><th></th></tr></thead>
           <tbody>
             ${rows.length ? rows.map(r => `
               <tr>
                 <td><span class="accent-bar cat-purchase"></span>${escapeHtml(r.description)}</td>
                 <td>${escapeHtml(r.unit||'—')}</td>
                 <td class="num">${escapeHtml(String(r.quantity ?? '—'))}</td>
-                <td class="num">${fmtMoney(purchaseLineTotal(r))}</td>
-                ${dateCell(r)}
+                <td class="num">${fmtMoney(r.amount)}</td>
                 <td>${rowActions(r)}</td>
               </tr>
-            `).join('') : emptyRow(showDate ? 6 : 5)}
+            `).join('') : emptyRow(5)}
           </tbody>
         </table>
         <div class="totals-strip"><div class="lead">${t('expPurchaseTotal')} <b>${fmtMoney(total)}</b></div><div>${rows.length} ${rows.length===1?t('expItem'):t('expItems')}</div></div>
@@ -60704,17 +60190,16 @@ function renderExpenseTable(container, tab, date, period='daily', range=null){
     container.innerHTML = `
       <div class="panel">
         <table>
-          <thead><tr><th>${t('expDesc')}</th><th>${t('expCat')}</th><th class="num">${t('expAmount')}</th>${dateHead}<th></th></tr></thead>
+          <thead><tr><th>${t('expDesc')}</th><th>${t('expCat')}</th><th class="num">${t('expAmount')}</th><th></th></tr></thead>
           <tbody>
             ${rows.length ? rows.map(r => `
               <tr>
                 <td><span class="accent-bar ${r.category==='Staff Salary'?'cat-salary':'cat-business'}"></span>${escapeHtml(r.description)}${r.source==='attendance'?` <span class="pill accent" style="font-size:10.5px;padding:2px 7px;margin-left:6px">${t('autoTag')}</span>`:''}</td>
                 <td><span class="pill absent">${escapeHtml(r.category||'—')}</span></td>
                 <td class="num">${fmtMoney(r.amount)}</td>
-                ${dateCell(r)}
                 <td>${rowActions(r)}</td>
               </tr>
-            `).join('') : emptyRow(showDate ? 5 : 4)}
+            `).join('') : emptyRow(4)}
           </tbody>
         </table>
         <div class="totals-strip"><div class="lead">${t('expBusinessTotal')} <b>${fmtMoney(total)}</b></div><div>${rows.length} ${rows.length===1?t('expEntry'):t('expEntries')}</div></div>
@@ -60724,17 +60209,16 @@ function renderExpenseTable(container, tab, date, period='daily', range=null){
     container.innerHTML = `
       <div class="panel">
         <table>
-          <thead><tr><th>${t('expItemDesc')}</th><th class="num">${t('expAmount')}</th><th>${t('expNote')}</th>${dateHead}<th></th></tr></thead>
+          <thead><tr><th>${t('expItemDesc')}</th><th class="num">${t('expAmount')}</th><th>${t('expNote')}</th><th></th></tr></thead>
           <tbody>
             ${rows.length ? rows.map(r => `
               <tr>
                 <td><span class="accent-bar cat-home"></span>${escapeHtml(r.description)}</td>
                 <td class="num">${fmtMoney(r.amount)}</td>
                 <td class="muted">${escapeHtml(r.note||'—')}</td>
-                ${dateCell(r)}
                 <td>${rowActions(r)}</td>
               </tr>
-            `).join('') : emptyRow(showDate ? 5 : 4)}
+            `).join('') : emptyRow(4)}
           </tbody>
         </table>
         <div class="totals-strip"><div class="lead">${t('expHomeTotal')} <b>${fmtMoney(total)}</b></div><div>${rows.length} ${rows.length===1?t('expEntry'):t('expEntries')}</div></div>
@@ -60744,7 +60228,6 @@ function renderExpenseTable(container, tab, date, period='daily', range=null){
   container.querySelectorAll('[data-edit-exp]').forEach(b => b.addEventListener('click', ()=> openEditExpenseModal(b.dataset.editExp)));
   container.querySelectorAll('[data-del-exp]').forEach(b => b.addEventListener('click', ()=> confirmDeleteExpense(b.dataset.delExp)));
 }
-
 function rowActions(r){
   const canEdit = true;
   const canDelete = r.source !== 'attendance';
@@ -60899,23 +60382,22 @@ function renderCreditors(root){
       <button class="btn primary" id="addCdBtn">${icon('plus')} ${t('cdAddRecord')}</button>
     </div>
     <p class="section-title"><i class="sw" style="background:var(--success)"></i>${t('cdDebtors')} <span class="muted" style="font-weight:500">${t('cdDebtorSub')}</span></p>
-    ${creditorTable(debtors,'debtor')}
+    ${creditorTable(debtors)}
     <div style="height:22px;"></div>
     <p class="section-title"><i class="sw" style="background:var(--danger)"></i>${t('cdCreditors')} <span class="muted" style="font-weight:500">${t('cdCreditorSub')}</span></p>
-    ${creditorTable(creditors,'creditor')}
+    ${creditorTable(creditors)}
   `;
-  root.querySelector('#addCdBtn').addEventListener('click', ()=>openAddCreditorModal());
-  root.querySelectorAll('[data-add-cd-type]').forEach(b => b.addEventListener('click', ()=>openAddCreditorModal(b.dataset.addCdType)));
+  root.querySelector('#addCdBtn').addEventListener('click', openAddCreditorModal);
   root.querySelectorAll('[data-pay]').forEach(b => b.addEventListener('click', ()=> openRecordPaymentModal(b.dataset.pay)));
   root.querySelectorAll('[data-edit-cd]').forEach(b => b.addEventListener('click', ()=> openEditCreditorModal(b.dataset.editCd)));
   root.querySelectorAll('[data-del-cd]').forEach(b => b.addEventListener('click', ()=> confirmDeleteCreditor(b.dataset.delCd)));
 }
-function creditorTable(list, type){
+function creditorTable(list){
   return `
     <div class="panel">
       <div class="table-wrap">
       <table>
-        <thead><tr><th>${t('cdName')}</th><th>${t('cdContact')}</th><th class="num">${t('cdTransaction')}</th><th class="num">${t('cdPaid')}</th><th class="num">${t('cdRemaining')}</th><th>${t('cdDate')}</th><th style="text-align:right"><button class="cd-table-add" data-add-cd-type="${type}" title="${t('cdAddRecord')}">${icon('plus')} ${t('cdAddRecord')}</button></th></tr></thead>
+        <thead><tr><th>${t('cdName')}</th><th>${t('cdContact')}</th><th class="num">${t('cdTransaction')}</th><th class="num">${t('cdPaid')}</th><th class="num">${t('cdRemaining')}</th><th>${t('cdDate')}</th><th></th></tr></thead>
         <tbody>
           ${list.length ? list.map(c => `
             <tr>
@@ -60940,14 +60422,15 @@ function creditorTable(list, type){
     </div>
   `;
 }
-function openAddCreditorModal(fixedType=''){
-  const isFixedType = fixedType === 'debtor' || fixedType === 'creditor';
+function openAddCreditorModal(){
   openModal({
     title:t('cdAddTitle'),
     bodyHtml:`
       <div class="form-grid">
         <div class="field"><label for="cdName">${t('cdNameLabel')}</label><input id="cdName"></div>
-        ${isFixedType ? '' : `<div class="field"><label for="cdType">${t('cdTypeLabel')}</label><select id="cdType"><option value="debtor">${t('cdTypeDebtor')}</option><option value="creditor">${t('cdTypeCreditor')}</option></select></div>`}
+        <div class="field"><label for="cdType">${t('cdTypeLabel')}</label>
+          <select id="cdType"><option value="debtor">${t('cdTypeDebtor')}</option><option value="creditor">${t('cdTypeCreditor')}</option></select>
+        </div>
         <div class="field"><label for="cdContact">${t('cdContactOptLabel')}</label><input id="cdContact"></div>
         <div class="field"><label for="cdAmt">${t('cdAmtLabel')}</label><input id="cdAmt" type="number" min="0" step="0.01"></div>
         <div class="field"><label for="cdDate">${t('cdDateLabel')}</label><input id="cdDate" type="date" value="${todayISO()}"></div>
@@ -60959,7 +60442,7 @@ function openAddCreditorModal(fixedType=''){
     onMount(modalEl){
       modalEl.querySelector('#cdSave').addEventListener('click', ()=>{
         const name = modalEl.querySelector('#cdName').value.trim();
-        const type = isFixedType ? fixedType : modalEl.querySelector('#cdType').value;
+        const type = modalEl.querySelector('#cdType').value;
         const contact = modalEl.querySelector('#cdContact').value.trim();
         const amt = modalEl.querySelector('#cdAmt').value;
         const date = modalEl.querySelector('#cdDate').value;
@@ -60970,17 +60453,6 @@ function openAddCreditorModal(fixedType=''){
         addCreditor({ name, type, contact, transactionAmount:Number(amt), date, notes });
         closeModal(); render(); toast(t('cdRecordAdded'));
       });
-      const nameInput = modalEl.querySelector('#cdName');
-      if (nameInput) setTimeout(()=>nameInput.focus(), 0);
-      const submitFromField = (ev)=>{
-        if (ev.key !== 'Enter') return;
-        if (ev.target && ev.target.tagName === 'TEXTAREA' && !ev.ctrlKey) return;
-        ev.preventDefault();
-        modalEl.querySelector('#cdSave').click();
-      };
-      modalEl.querySelectorAll('input, select').forEach(el=>el.addEventListener('keydown', submitFromField));
-      const notesInput = modalEl.querySelector('#cdNotes');
-      if (notesInput) notesInput.addEventListener('keydown', ev=>{ if(ev.key==='Enter' && ev.ctrlKey){ ev.preventDefault(); modalEl.querySelector('#cdSave').click(); } });
     }
   });
 }
@@ -61067,15 +60539,7 @@ function renderAdmin(root){
     </div>
     <div id="adminTabRoot" class="view-enter"></div>
   `;
-  root.querySelectorAll('[data-atab]').forEach(b => b.addEventListener('click', ()=>{
-    const tab = b.dataset.atab;
-    if (tab === 'ai' && !developerAiUnlocked){
-      requireDeveloperAi(() => { state.adminTab = 'ai'; render(); });
-      return;
-    }
-    state.adminTab = tab;
-    render();
-  }));
+  root.querySelectorAll('[data-atab]').forEach(b => b.addEventListener('click', ()=>{ state.adminTab = b.dataset.atab; render(); }));
   const wrap = root.querySelector('#adminTabRoot');
   if (state.adminTab==='staff') renderAdminStaff(wrap);
   else if (state.adminTab==='security') renderAdminSecurity(wrap);
@@ -61166,8 +60630,17 @@ function confirmDeleteStaff(id){
     bodyHtml:`<p>${t('adminDeleteStaffBody',{name:escapeHtml(s.name)})}</p>`,
     footHtml:`<button class="btn" data-close>${t('cancelBtn')}</button><button class="btn danger" id="confirmDelStaff">${t('deleteBtn')}</button>`,
     onMount(modalEl){
-      modalEl.querySelector('#confirmDelStaff').addEventListener('click', ()=>{
-        deleteStaff(id);
+      modalEl.querySelector('#confirmDelStaff').addEventListener('click', async ()=>{
+        const btn = modalEl.querySelector('#confirmDelStaff');
+        btn.disabled = true;
+        btn.textContent = 'Deleting…';
+        const result = await deleteStaff(id);
+        if (!result.ok){
+          btn.disabled = false;
+          btn.textContent = t('deleteBtn');
+          toast('Staff deletion was not saved to Supabase. The staff member was kept.', true);
+          return;
+        }
         closeModal();
         render();
         toast(t('adminStaffDeleted',{name:s.name}));
@@ -61425,13 +60898,6 @@ document.addEventListener('keydown', (e) => {
   }
   if (state.view !== 'sales') return;
 
-  // Fast sale entry: Enter -> amount -> Enter records the sale as Unknown.
-  if (e.key === 'Enter'){
-    e.preventDefault();
-    openUnknownSaleModal();
-    return;
-  }
-
   if (e.key.length === 1 && /^[a-zA-Z0-9]$/.test(e.key)){
     const key = e.key.toUpperCase();
     const match = getActiveStaff().find(s => s.keyword.toUpperCase() === key);
@@ -61537,8 +61003,13 @@ function attachMedicineAutocomplete(input, listEl, onPick){
 /* =========================================================
    AI ASSISTANT  (Google Gemini)
    ---------------------------------------------------------
-   The API key is entered by the operator in Admin > AI Assistant.
-   No API key is embedded in this file.
+   The API key is typed by the operator in Admin > AI Assistant and
+   is kept only in this browser's localStorage. It is sent to Google
+   and nowhere else. This page is a static file, not a server: anyone
+   with access to this browser profile can read the stored key, so
+   use a key you are willing to rotate.
+   CORS on generativelanguage.googleapis.com is open for browser
+   callers, so requests go straight from this page to Google.
    ========================================================= */
 const AI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta';
 const AI_HISTORY_TURNS = 12;      // past messages replayed with each request
@@ -61619,7 +61090,7 @@ function aiKpis(){
     monthExpenseTotal: round2(monthExpTotal),
     monthNet: round2(monthSales - monthExpTotal),
     monthSalary: round2(monthExp.filter(e => e.source === 'attendance').reduce((s, e) => s + e.amount, 0)),
-    monthPurchase: round2(mExp.filter(e => e.type === EXPENSE_TYPES.PURCHASE).reduce((sum,e)=>sum + purchaseLineTotal(e),0)),
+    monthPurchase: round2(sumType(EXPENSE_TYPES.PURCHASE)),
     monthBusiness: round2(sumType(EXPENSE_TYPES.BUSINESS)),
     monthHome: round2(sumType(EXPENSE_TYPES.HOME)),
     receivableFromDebtors: round2(totalReceivable()),
@@ -62385,7 +61856,7 @@ function renderAiChat(host, opts){
 function renderAi(root){
   root.innerHTML = (aiReady() ? '' : aiNoticeHtml()) + '<div id="aiPageHost"></div>';
   const go = root.querySelector('[data-ai-goto-settings]');
-  if (go) go.addEventListener('click', () => { requireDeveloperAi(() => { state.adminTab = 'ai'; navigate('admin'); }); });
+  if (go) go.addEventListener('click', () => { state.adminTab = 'ai'; navigate('admin'); });
   renderAiChat(root.querySelector('#aiPageHost'));
 }
 function aiNoticeHtml(){
@@ -62783,9 +62254,6 @@ const TRANSLATIONS = {
     /* Sales */
     salesTabDaily: 'Daily',
     salesTabMonthly: 'Monthly',
-    salesTabYearly: 'Yearly',
-    exportExcelBtn: 'Excel',
-    exportNoSales: 'No sales recorded for this period.',
     salesTableStaff: 'Staff',
     salesTableSale: 'Sale',
     salesTableDate: 'Date',
@@ -62795,7 +62263,6 @@ const TRANSLATIONS = {
     pressKeywordHint: 'Press a staff keyword',
     thenTypeAmount: 'then type the amount and hit',
     removedStaff: 'Removed staff',
-    unknownSaleStaff: 'Unknown',
     staffKeyBarTitle: 'Staff keys',
     staffKeyBarEmpty: 'No active staff keys. Add staff in Admin / Settings.',
     editSaleTitle: 'Edit sale amount',
@@ -62839,10 +62306,6 @@ const TRANSLATIONS = {
     attTotalMonthlySalary: 'Total Monthly Salary',
     attNoRecordsMonth: 'No attendance records this month.',
     attPresentRow: 'Present',
-    attUnlock: 'Unlock editing',
-    attLock: 'Lock editing',
-    attUnlockHint: 'Attendance is locked. You can only mark Present or Absent for today.',
-    attLockedPastFuture: 'Only today can be changed while attendance is locked.',
     attAbsentRow: 'Absent',
     noActiveStaffAtt: 'No active staff to summarize.',
     /* Expense */
@@ -62873,17 +62336,6 @@ const TRANSLATIONS = {
     expEntry: 'entry',
     expEntries: 'entries',
     exportPdfBtn: 'Export PDF',
-    shareSalesWhatsappBtn: 'WhatsApp',
-    shareSalesWhatsappNoSales: 'No sales recorded for this period.',
-    shareSalesWhatsappFallback: 'Sales list is ready to share on WhatsApp.',
-    shareWhatsappBtn: 'WhatsApp',
-    shareWhatsappNoExpense: 'No expenses recorded for this period.',
-    exportExcelBtn: 'Excel',
-    expenseDaily: 'Daily',
-    expenseMonthly: 'Monthly',
-    expenseYearly: 'Yearly',
-    expensePeriodTotal: 'Period total',
-    exportNoExpensePeriod: 'No expenses recorded for this period.',
     exportNo: 'No',
     exportNoPurchase: 'No purchase entries to export for this date.',
     exportDownloaded: 'Purchase export downloaded.',
@@ -63037,9 +62489,6 @@ const TRANSLATIONS = {
     authRequired: 'Admin authentication required',
     authPwLabel: 'Enter admin password',
     authIncorrect: 'Incorrect password. Try again.',
-    developerAiAuthTitle: 'Developer access required',
-    developerAiAuthLabel: 'Enter developer password',
-    developerAiAuthIncorrect: 'Incorrect developer password. Try again.',
     authDataRestore: 'Admin authentication required to restore data',
     /* Toast / misc */
     toastSaleUpdated: 'Sale updated.',
@@ -63227,9 +62676,6 @@ const TRANSLATIONS = {
     /* Sales */
     salesTabDaily: 'দৈনিক',
     salesTabMonthly: 'মাসিক',
-    salesTabYearly: 'বার্ষিক',
-    exportExcelBtn: 'এক্সেল',
-    exportNoSales: 'এই সময়ের জন্য কোনো বিক্রয় রেকর্ড নেই।',
     salesTableStaff: 'কর্মী',
     salesTableSale: 'বিক্রয়',
     salesTableDate: 'তারিখ',
@@ -63239,7 +62685,6 @@ const TRANSLATIONS = {
     pressKeywordHint: 'কর্মীর কীওয়ার্ড চাপুন',
     thenTypeAmount: 'তারপর পরিমাণ লিখুন এবং চাপুন',
     removedStaff: 'বাদ দেওয়া কর্মী',
-    unknownSaleStaff: 'অজানা',
     staffKeyBarTitle: 'কর্মীর কী',
     staffKeyBarEmpty: 'কোনো সক্রিয় কর্মীর কী নেই। অ্যাডমিন / সেটিংসে কর্মী যোগ করুন।',
     editSaleTitle: 'বিক্রয়ের পরিমাণ সম্পাদনা',
@@ -63313,17 +62758,6 @@ const TRANSLATIONS = {
     expEntry: 'এন্ট্রি',
     expEntries: 'এন্ট্রি',
     exportPdfBtn: 'PDF এক্সপোর্ট',
-    shareSalesWhatsappBtn: 'WhatsApp',
-    shareSalesWhatsappNoSales: 'এই সময়ের জন্য কোনো বিক্রয় রেকর্ড নেই।',
-    shareSalesWhatsappFallback: 'বিক্রয় তালিকা WhatsApp-এ শেয়ার করার জন্য প্রস্তুত।',
-    shareWhatsappBtn: 'হোয়াটসঅ্যাপ',
-    shareWhatsappNoExpense: 'এই সময়ের জন্য কোনো খরচের রেকর্ড নেই।',
-    exportExcelBtn: 'এক্সেল',
-    expenseDaily: 'দৈনিক',
-    expenseMonthly: 'মাসিক',
-    expenseYearly: 'বার্ষিক',
-    expensePeriodTotal: 'সময়ের মোট',
-    exportNoExpensePeriod: 'এই সময়ের জন্য কোনো খরচের রেকর্ড নেই।',
     exportNo: 'নং',
     exportNoPurchase: 'এই তারিখে এক্সপোর্ট করার মতো কোনো ক্রয় নেই।',
     exportDownloaded: 'ক্রয় এক্সপোর্ট ডাউনলোড হয়েছে।',
@@ -63477,9 +62911,6 @@ const TRANSLATIONS = {
     authRequired: 'অ্যাডমিন যাচাই প্রয়োজন',
     authPwLabel: 'অ্যাডমিন পাসওয়ার্ড দিন',
     authIncorrect: 'পাসওয়ার্ড সঠিক নয়। আবার চেষ্টা করুন।',
-    developerAiAuthTitle: 'ডেভেলপার অ্যাক্সেস প্রয়োজন',
-    developerAiAuthLabel: 'ডেভেলপার পাসওয়ার্ড দিন',
-    developerAiAuthIncorrect: 'ডেভেলপার পাসওয়ার্ড সঠিক নয়। আবার চেষ্টা করুন।',
     authDataRestore: 'ডেটা পুনরুদ্ধারের জন্য অ্যাডমিন যাচাই প্রয়োজন',
     /* Toast / misc */
     toastSaleUpdated: 'বিক্রয় আপডেট হয়েছে।',
