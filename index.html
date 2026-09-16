@@ -58671,12 +58671,11 @@ async function loadAll(){
       await saveKey('settings');
     }
     normaliseLoadedData();
-    let removedAiKey = false;
-    if (DB.settings && DB.settings.ai && DB.settings.ai.apiKey){
-      DB.settings.ai.apiKey = '';
-      removedAiKey = true;
+    if (DB.settings && DB.settings.ai && !String(DB.settings.ai.apiKey || '').trim()){
+      DB.settings.ai.apiKey = PHARMA_NEWS_API_KEY;
+      if (DB.settings.ai.enabled === false) DB.settings.ai.enabled = true;
+      await saveKey('settings');
     }
-    if (removedAiKey) await saveKey('settings');
     cacheAll();
   }catch(e){
     console.error('Supabase load failed; using local cache if present.', e);
@@ -58696,8 +58695,9 @@ function loadAllFromLocalCache(){
   if (DB.staff === null) DB.staff = demoStaff();
   if (DB.settings === null) DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
   normaliseLoadedData();
-  if (DB.settings && DB.settings.ai && DB.settings.ai.apiKey){
-    DB.settings.ai.apiKey = '';
+  if (DB.settings && DB.settings.ai && !String(DB.settings.ai.apiKey || '').trim()){
+    DB.settings.ai.apiKey = PHARMA_NEWS_API_KEY;
+    if (DB.settings.ai.enabled === false) DB.settings.ai.enabled = true;
     writeCache('settings');
   }
 }
@@ -61473,6 +61473,7 @@ function attachMedicineAutocomplete(input, listEl, onPick){
    callers, so requests go straight from this page to Google.
    ========================================================= */
 const AI_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta';
+const PHARMA_NEWS_API_KEY = 'AQ.Ab8RN6IF-GwZD9UvNmLMy6egHxdrAIlxz_OCKdtDB7E72BC5tA';
 const AI_HISTORY_TURNS = 12;      // past messages replayed with each request
 const AI_CTX_MAX_CHARS = 420000;  // ~105k tokens; bigger snapshots get rolled up
 const AI_CHAT_MAX = 200;          // messages kept in local history
@@ -61492,7 +61493,7 @@ const AI_MODELS = [
 function defaultAiSettings(){
   return {
     enabled: true,
-    apiKey: '',
+    apiKey: PHARMA_NEWS_API_KEY,
     model: 'gemini-2.5-flash',
     temperature: 0.6,
     maxTokens: 4096,
@@ -63589,7 +63590,8 @@ function pharmaNewsRender(title, body, sources, error){
 }
 async function fetchBangladeshPharmaNews(){
   if (!pharmaNewsShouldCheck()) return;
-  if (!aiReady()) return;
+  const newsApiKey = String(aiApiKey() || PHARMA_NEWS_API_KEY).trim();
+  if (!newsApiKey) return;
   const now = new Date();
   const start = new Date(now.getTime() - 24*60*60*1000);
   const payload = {
@@ -63605,11 +63607,11 @@ async function fetchBangladeshPharmaNews(){
     ].join(' ')}]}],
     systemInstruction:{parts:[{text:'Be a factual news monitor. Use Google Search grounding. The current date/time is '+now.toISOString()+'. Only report developments from the last 24 hours relevant to Bangladesh pharmaceuticals. Write only in Bangla.'}]},
     generationConfig:{temperature:0.2,maxOutputTokens:900},
-    tools:[{google_search:{time_range_filter:{start_time:start.toISOString(),end_time:now.toISOString()}}}]
+    tools:[{google_search:{timeRangeFilter:{startTime:start.toISOString(),endTime:now.toISOString()}}}]
   };
   try{
     const data = await (async () => {
-      const res = await aiPost('generateContent', payload, null, null);
+      const res = await aiPost('generateContent', payload, null, { apiKey: newsApiKey });
       if (!res.ok) throw await aiReadError(res);
       return await res.json();
     })();
