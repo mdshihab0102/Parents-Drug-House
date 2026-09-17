@@ -610,6 +610,67 @@
   .tab-btn:hover{color:var(--ink);}
   .tab-btn.active{color:var(--on-accent);background:var(--accent);box-shadow:0 6px 14px -8px var(--accent-glow);}
 
+  /* Current-day highlight */
+  .attendance-panel .attendance-table .att-today-row > td{
+    background:rgba(16,185,129,.065);
+    box-shadow:inset 0 1px 0 rgba(16,185,129,.10), inset 0 -1px 0 rgba(16,185,129,.10);
+  }
+  .attendance-panel .attendance-table .att-today-row > td:first-child{
+    background:rgba(16,185,129,.12) !important;
+    color:var(--ink);
+    border-left:3px solid var(--accent);
+    padding-left:calc(13px - 3px);
+  }
+  .attendance-panel .attendance-table .att-today-row > td.attendance-status-cell.att-status-present{background:rgba(34,197,94,.12);}
+  .attendance-panel .attendance-table .att-today-row > td.attendance-status-cell.att-status-absent{background:rgba(239,68,68,.10);}
+  .attendance-panel .attendance-table .att-today-row > td.attendance-status-cell.att-status-leave{background:rgba(245,158,11,.11);}
+  .attendance-panel .attendance-table .att-today-row > td.attendance-status-cell.att-status-holiday{background:rgba(59,130,246,.10);}
+  .attendance-panel .attendance-table .att-today-row > td.attendance-status-cell.att-status-weekly{background:rgba(124,58,237,.10);}
+
+  /* Attendance status colors */
+  .attendance-panel .attend-btn{
+    min-width:112px;min-height:38px;padding:8px 13px;border-radius:10px;
+    border:1px solid var(--border-2);background:var(--surface);
+    color:var(--ink-2);font-size:12px;font-weight:700;
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    box-shadow:0 2px 7px rgba(15,23,42,.04);
+    transition:transform .14s ease,box-shadow .14s ease,background .14s ease,border-color .14s ease,color .14s ease;
+  }
+  .attendance-panel .attend-btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 5px 13px rgba(15,23,42,.08);}
+  .attendance-panel .attend-btn:not(:disabled):active{transform:scale(.97);}
+  .attendance-panel .attend-btn:disabled{opacity:.7;cursor:not-allowed;}
+  .attendance-panel .att-status-pending{background:var(--surface);color:var(--ink-2);border-color:var(--border-2);}
+  .attendance-panel .att-status-present{background:#dcfce7;color:#15803d;border-color:#86efac;box-shadow:0 4px 12px rgba(34,197,94,.12);}
+  .attendance-panel .att-status-absent{background:#fee2e2;color:#dc2626;border-color:#fca5a5;box-shadow:0 4px 12px rgba(239,68,68,.10);}
+  .attendance-panel .att-status-leave{background:#fef3c7;color:#b45309;border-color:#fcd34d;box-shadow:0 4px 12px rgba(245,158,11,.10);}
+  .attendance-panel .att-status-holiday{background:#dbeafe;color:#2563eb;border-color:#93c5fd;box-shadow:0 4px 12px rgba(59,130,246,.10);}
+  .attendance-panel .att-status-weekly{background:#ede9fe;color:#7c3aed;border-color:#c4b5fd;box-shadow:0 4px 12px rgba(124,58,237,.10);}
+  .attendance-panel .attendance-status-cell.att-status-present{background:rgba(34,197,94,.055);}
+  .attendance-panel .attendance-status-cell.att-status-absent{background:rgba(239,68,68,.055);}
+  .attendance-panel .attendance-status-cell.att-status-leave{background:rgba(245,158,11,.065);}
+  .attendance-panel .attendance-status-cell.att-status-holiday{background:rgba(59,130,246,.055);}
+  .attendance-panel .attendance-status-cell.att-status-weekly{background:rgba(124,58,237,.055);}
+  .attendance-panel .attendance-legend .att-status-present{color:#15803d;background:#dcfce7;border-color:#86efac;}
+  .attendance-panel .attendance-legend .att-status-absent{color:#dc2626;background:#fee2e2;border-color:#fca5a5;}
+  .attendance-panel .attendance-legend .att-status-leave{color:#b45309;background:#fef3c7;border-color:#fcd34d;}
+  .attendance-panel .attendance-legend .att-status-holiday{color:#2563eb;background:#dbeafe;border-color:#93c5fd;}
+  .attendance-panel .attendance-legend .att-status-weekly{color:#7c3aed;background:#ede9fe;border-color:#c4b5fd;}
+  .attendance-panel .attendance-legend .legend-pill{
+    border:1px solid var(--border-2);padding:6px 9px;border-radius:8px;font-weight:700;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .attendance-payroll th:nth-child(4){background:#dcfce7;color:#15803d;}
+  .attendance-payroll th:nth-child(5){background:#fee2e2;color:#dc2626;}
+  .attendance-payroll th:nth-child(6){background:#fef3c7;color:#b45309;}
+  .attendance-payroll th:nth-child(7){background:#dbeafe;color:#2563eb;}
+  .attendance-payroll th:nth-child(8){background:#ede9fe;color:#7c3aed;}
+  .attendance-payroll td:nth-child(4){background:rgba(34,197,94,.035);}
+  .attendance-payroll td:nth-child(5){background:rgba(239,68,68,.035);}
+  .attendance-payroll td:nth-child(6){background:rgba(245,158,11,.04);}
+  .attendance-payroll td:nth-child(7){background:rgba(59,130,246,.035);}
+  .attendance-payroll td:nth-child(8){background:rgba(124,58,237,.035);}
+  @media(max-width:560px){.attendance-panel .attend-btn{min-width:96px;min-height:36px;padding:7px 10px;font-size:11.5px;}}
+
   /* Staff Attendance: the table header scrolls naturally with the attendance rows. */
   .attendance-table-wrap{overflow-x:auto;overflow-y:visible;}
   .attendance-table thead th.attendance-sticky-head{
@@ -670,6 +731,37 @@
     transition:all var(--t-fast) var(--ease);
   }
   .attend-btn svg{width:13px;height:13px;}
+  /* Attendance payroll enhancement */
+  .attendance-overview{display:grid;grid-template-columns:repeat(4,minmax(175px,1fr));gap:12px;margin:16px 0;}
+  .attendance-stat{position:relative;overflow:hidden;background:linear-gradient(145deg,var(--surface),var(--surface-2));border:1px solid var(--border);border-radius:16px;padding:17px 18px;box-shadow:var(--shadow-xs);min-width:0;}
+  .attendance-stat:after{content:"";position:absolute;right:-22px;top:-22px;width:72px;height:72px;border-radius:50%;background:var(--accent-soft);opacity:.7;}
+  .attendance-stat .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.075em;color:var(--ink-3);font-weight:800;position:relative;z-index:1;}
+  .attendance-stat .v{margin-top:7px;font-size:24px;font-weight:800;letter-spacing:-.035em;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;z-index:1;}
+  .attendance-stat .s{margin-top:5px;font-size:11.5px;color:var(--ink-3);position:relative;z-index:1;}
+  .attendance-payroll-wrap{margin-bottom:16px;border-radius:16px;overflow:hidden;}
+  .attendance-payroll-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 19px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--surface),var(--surface-2));}
+  .attendance-payroll-title{font-weight:800;font-size:16px;letter-spacing:-.015em;}
+  .attendance-payroll-sub{font-size:12px;color:var(--ink-3);margin-top:4px;line-height:1.45;}
+  .attendance-payroll-scroll{overflow-x:auto;}
+  .attendance-payroll{min-width:1180px;border-collapse:separate;border-spacing:0;}
+  .attendance-payroll th,.attendance-payroll td{padding:13px 13px;font-size:12px;white-space:nowrap;border-bottom:1px solid var(--border);}
+  .attendance-payroll th{font-size:10.5px;text-transform:uppercase;letter-spacing:.045em;color:var(--ink-3);font-weight:800;background:var(--surface-2);}
+  .attendance-payroll tbody tr:hover td{background:var(--surface-2);}
+  .attendance-payroll tbody tr:last-child td{border-bottom:0;}
+  .attendance-payroll .staff-cell{position:sticky;left:0;z-index:3;background:var(--surface);min-width:185px;}
+  .attendance-payroll thead .staff-cell{background:var(--surface-2);z-index:5;}
+  .attendance-payroll tfoot th,.attendance-payroll tfoot td{background:var(--surface-2);border-bottom:0;font-weight:800;padding-top:14px;padding-bottom:14px;}
+  .attendance-payroll .money{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;font-size:12px;}
+  .attendance-payroll .net{color:var(--accent-text);font-weight:800;}
+  .attendance-payroll .deduct{color:var(--danger);font-weight:700;}
+  .att-count{font-weight:750;text-align:center;font-variant-numeric:tabular-nums;}
+  .att-mini{display:flex;align-items:center;gap:7px;min-width:125px;}
+  .att-mini-bar{height:6px;flex:1;min-width:45px;background:var(--border);border-radius:99px;overflow:hidden;}
+  .att-mini-fill{height:100%;background:var(--accent);border-radius:99px;}
+  .att-mini-pct{font-size:10px;color:var(--ink-3);font-weight:750;min-width:31px;text-align:right;}
+  .att-payroll-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:8px;background:var(--success-soft);color:var(--success);font-size:10.5px;font-weight:800;}
+  @media(max-width:1050px){.attendance-overview{grid-template-columns:repeat(2,minmax(175px,1fr));}}
+  @media(max-width:560px){.attendance-overview{grid-template-columns:1fr 1fr;gap:9px}.attendance-stat{padding:13px}.attendance-stat .v{font-size:19px}.attendance-payroll-head{align-items:flex-start;flex-direction:column}.attendance-payroll-title{font-size:15px}}
   .attend-btn:hover{border-color:var(--accent);color:var(--accent-text);background:var(--accent-soft);}
   .attend-btn:active{transform:scale(.96);}
 
@@ -58453,7 +58545,7 @@ const STORAGE_KEYS = {
 */
 const SUPABASE_URL = 'https://ixvttrfjuyzkwwemiwno.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dnR0cmZqdXl6a3d3ZW1pd25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODQyNjUsImV4cCI6MjEwNTA2MDI2NX0.FDgBkAqfDmveHLsvm4hB3kYo960jYYZCN93URq6iK2c';
-const SUPABASE_APP_INSTANCE_ID = 'default';
+const SUPABASE_APP_INSTANCE_ID = 'fresh-start-2026-09-17';
 const SUPABASE_TABLES = {
   staff:'staff', attendance:'attendance', sales:'sales', expenses:'expenses',
   creditors:'creditors', settings:'settings', aiChat:'ai_chat'
@@ -58622,6 +58714,19 @@ async function fetchSettings(){
   if (error) throw error;
   return data ? (data.data || {}) : null;
 }
+const FRESH_START_RESET_KEY = 'pharmacy_fresh_start_reset_v1';
+
+function resetBrowserDataForFreshStart(){
+  try{
+    if (localStorage.getItem(FRESH_START_RESET_KEY) !== 'done'){
+      Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+      localStorage.setItem(FRESH_START_RESET_KEY, 'done');
+    }
+  }catch(e){
+    console.warn('Fresh-start browser reset could not be completed:', e);
+  }
+}
+
 function cacheKey(name){ return STORAGE_KEYS[name]; }
 function readCache(name, fallback){
   try{
@@ -58637,6 +58742,7 @@ function writeCache(name){
 function cacheAll(){ ['staff','attendance','sales','expenses','creditors','settings','aiChat'].forEach(writeCache); }
 async function loadAll(){
   try{
+    resetBrowserDataForFreshStart();
     initSupabase();
     const [staff, attendance, sales, expenses, creditors, settings, aiChat] = await Promise.all([
       fetchTable('staff'), fetchTable('attendance'), fetchTable('sales'), fetchTable('expenses'), fetchTable('creditors'), fetchSettings(), fetchTable('aiChat')
@@ -58666,6 +58772,7 @@ async function loadAll(){
   }
 }
 function loadAllFromLocalCache(){
+  resetBrowserDataForFreshStart();
   DB.staff = readCache('staff', null);
   DB.attendance = readCache('attendance', []);
   DB.sales = readCache('sales', []);
@@ -58673,7 +58780,7 @@ function loadAllFromLocalCache(){
   DB.creditors = readCache('creditors', []);
   DB.settings = readCache('settings', null);
   DB.aiChat = readCache('aiChat', []);
-  if (DB.staff === null) DB.staff = demoStaff();
+  if (DB.staff === null) DB.staff = [];
   if (DB.settings === null) DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
   normaliseLoadedData();
   if (DB.settings && DB.settings.ai && /^AQ\./.test(String(DB.settings.ai.apiKey || ''))){
@@ -58780,13 +58887,7 @@ async function migrateLocalStorageToSupabase(confirmOverwrite){
   applyTheme(true); render();
   toast('Local browser data migrated to Supabase.');
 }
-function demoStaff(){
-  return [
-    { id: uid('st'), name:'Jamil', keyword:'J', dailySalary:500, active:true },
-    { id: uid('st'), name:'Noman', keyword:'N', dailySalary:450, active:true },
-    { id: uid('st'), name:'Rahim', keyword:'R', dailySalary:500, active:true },
-  ];
-}
+function demoStaff(){ return []; }
 
 /* =========================================================
    UTILITY FUNCTIONS
@@ -58993,34 +59094,57 @@ async function deleteStaff(id){
 function findAttendance(staffId, date){
   return DB.attendance.find(a => a.staffId === staffId && a.date === date);
 }
+const ATT_STATUS_META = {
+  present:{label:'Present', short:'P', cls:'att-status-present', icon:'✓'},
+  absent:{label:'Absent', short:'A', cls:'att-status-absent', icon:'×'},
+  leave:{label:'Leave', short:'L', cls:'att-status-leave', icon:'L'},
+  holiday:{label:'Holiday', short:'H', cls:'att-status-holiday', icon:'H'},
+  weekly:{label:'Weekly', short:'W', cls:'att-status-weekly', icon:'W'},
+  pending:{label:'Not marked', short:'—', cls:'att-status-pending', icon:'•'}
+};
+function attendanceStatusMeta(status){ return ATT_STATUS_META[status] || ATT_STATUS_META.pending; }
 function setAttendance(staffId, date, status){
   const staff = getStaff(staffId);
   if (!staff) return;
   let rec = findAttendance(staffId, date);
-  if (status === 'present'){
-    const salary = staff.dailySalary;
+  if (!ATT_STATUS_META[status] || status === 'pending'){
     if (rec){
-      rec.status = 'present';
-      rec.salaryGenerated = salary;
-      rec.timestamp = Date.now();
-    } else {
-      rec = { id: uid('att'), staffId, date, status:'present', salaryGenerated: salary, timestamp: Date.now() };
-      DB.attendance.push(rec);
+      DB.attendance = DB.attendance.filter(x => x !== rec);
+      saveKey('attendance');
+      removeSalaryExpense(staffId, date);
     }
-    saveKey('attendance');
-    syncSalaryExpense(rec);
-  } else if (status === 'absent'){
-    if (rec){
-      rec.status = 'absent';
-      rec.salaryGenerated = 0;
-      rec.timestamp = Date.now();
-    } else {
-      rec = { id: uid('att'), staffId, date, status:'absent', salaryGenerated:0, timestamp: Date.now() };
-      DB.attendance.push(rec);
-    }
-    saveKey('attendance');
-    removeSalaryExpense(staffId, date);
+    return;
   }
+  const salary = status === 'present' ? Number(staff.dailySalary) || 0 : 0;
+  if (rec){
+    rec.status = status;
+    rec.salaryGenerated = salary;
+    rec.timestamp = Date.now();
+  } else {
+    rec = { id: uid('att'), staffId, date, status, salaryGenerated:salary, timestamp:Date.now() };
+    DB.attendance.push(rec);
+  }
+  saveKey('attendance');
+  if (status === 'present') syncSalaryExpense(rec);
+  else removeSalaryExpense(staffId, date);
+}
+function attendanceMonthStats(staffId, ym){
+  const staff = getStaff(staffId);
+  const [year, month] = ym.split('-').map(Number);
+  const totalDays = new Date(year, month, 0).getDate();
+  const records = DB.attendance.filter(a => a.staffId === staffId && monthKey(a.date) === ym);
+  const count = status => records.filter(r => r.status === status).length;
+  const weekly = count('weekly');
+  const holiday = count('holiday');
+  const workingDays = Math.max(0, totalDays - weekly - holiday);
+  const present = count('present');
+  const absent = count('absent');
+  const leave = count('leave');
+  const daily = Number(staff?.dailySalary) || 0;
+  const basic = daily * totalDays;
+  const deduction = absent * daily;
+  const net = Math.max(0, basic - deduction);
+  return {staff,totalDays,workingDays,present,absent,leave,holiday,weekly,basic,daily,deduction,net,records};
 }
 function syncSalaryExpense(attRec){
   let exp = DB.expenses.find(e => e.source === 'attendance' && e.staffId === attRec.staffId && e.date === attRec.date);
@@ -59043,13 +59167,9 @@ function removeSalaryExpense(staffId, date){
   if (DB.expenses.length !== before) saveKey('expenses');
 }
 function monthlyAttendanceSummary(staffId, ym){
-  const staff = getStaff(staffId);
-  const records = DB.attendance.filter(a => a.staffId === staffId && monthKey(a.date) === ym)
-    .sort((a,b)=> a.date.localeCompare(b.date));
-  const present = records.filter(r => r.status === 'present');
-  const absent = records.filter(r => r.status === 'absent');
-  const total = present.reduce((sum,r)=> sum + (r.salaryGenerated||0), 0);
-  return { staff, records, presentDays: present.length, absentDays: absent.length, total };
+  const x = attendanceMonthStats(staffId, ym);
+  const records = x.records.slice().sort((a,b)=> a.date.localeCompare(b.date));
+  return { ...x, staff:x.staff, records, presentDays:x.present, absentDays:x.absent, total:x.present*x.daily };
 }
 
 /* =========================================================
@@ -59206,14 +59326,7 @@ function getNavItems(){ return NAV_KEYS.map(n => ({ ...n, label: t(n.labelKey) }
 const NAV_ITEMS = NAV_KEYS.map(n => ({ ...n, label: n.id })); // placeholder; actual labels via getNavItems()
 
 function navigate(view){
-  if (view === 'admin' && !state.adminUnlocked){
-    requireAdmin(() => {
-      state.adminUnlocked = true;
-      state.view = 'admin';
-      render();
-    }, t('authRequired'));
-    return;
-  }
+  if (view === 'admin') state.adminUnlocked = true;
   if (state.view === 'admin' && view !== 'admin'){
     state.adminUnlocked = false;
   }
@@ -60114,124 +60227,144 @@ function renderAttendance(root){
   const monthTitle = monthLabelLong(ym);
   const makeDate = day => `${ym}-${String(day).padStart(2,'0')}`;
   const isEditableDate = date => state.attendanceUnlocked || date === today;
+  const summaries = staffList.map(s => attendanceMonthStats(s.id, ym));
+  const totalPresent = summaries.reduce((n,x)=>n+x.present,0);
+  const totalAbsent = summaries.reduce((n,x)=>n+x.absent,0);
+  const totalLeave = summaries.reduce((n,x)=>n+x.leave,0);
+  const totalPayroll = summaries.reduce((n,x)=>n+x.net,0);
+  const totalDeduction = summaries.reduce((n,x)=>n+x.deduction,0);
+
+  const statusButton = (staff, date) => {
+    const record = findAttendance(staff.id, date);
+    const status = record?.status || 'pending';
+    const meta = attendanceStatusMeta(status);
+    const editable = isEditableDate(date);
+    const disabledAttr = editable ? '' : 'disabled';
+    const title = editable ? 'Click to change status' : 'Only today can be changed while attendance is locked; all attendance types are available';
+    return `<button class="attend-btn ${meta.cls}" ${disabledAttr} title="${escapeHtml(title)}" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="${status}">
+      <span style="font-weight:800;min-width:13px;text-align:center;">${meta.icon}</span><span>${meta.label}</span>
+    </button>`;
+  };
 
   root.innerHTML = `
     <div class="section-bar">
       <div class="date-nav">
-        <button class="icon-btn" id="attMonthPrev" title="${t('prevMonth') || 'Previous month'}">${icon('arrowLeft')}</button>
+        <button class="icon-btn" id="attMonthPrev" title="Previous month">${icon('arrowLeft')}</button>
         <strong>${escapeHtml(monthTitle)}</strong>
-        <button class="icon-btn" id="attMonthNext" title="${t('nextMonth') || 'Next month'}">${icon('arrowRight')}</button>
+        <button class="icon-btn" id="attMonthNext" title="Next month">${icon('arrowRight')}</button>
         <input type="month" id="attMonthSelect" value="${ym}" aria-label="Select attendance month">
       </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <div class="attendance-tools">
         <button class="btn" id="attToday">${icon('calendar')} Today</button>
-        <button class="btn" id="attLockToggle">${icon(state.attendanceUnlocked ? 'unlock' : 'lock')} ${state.attendanceUnlocked ? t('attLock') : t('attUnlock')}</button>
+        <button class="btn" id="attMonthlySummary">${icon('chart')} Monthly summary</button>
+        <button class="btn" id="attLockToggle">${icon(state.attendanceUnlocked ? 'unlock' : 'lock')} ${state.attendanceUnlocked ? 'Lock editing' : 'Unlock editing'}</button>
       </div>
     </div>
+
+    <div class="panel attendance-payroll-wrap">
+      <div class="attendance-payroll-head">
+        <div><div class="attendance-payroll-title">Monthly attendance & payroll</div><div class="attendance-payroll-sub">A clear monthly view of attendance, salary, deductions and take-home pay — with the live attendance grid below.</div></div>
+        <div class="attendance-hint"></div>
+      </div>
+      <div class="attendance-payroll-scroll">
+        <table class="attendance-payroll">
+          <thead><tr>
+            <th class="staff-cell">Staff</th><th>Total Day</th><th>Working Day</th><th>Present</th><th>Absent</th><th>Leave</th><th>Holiday</th><th>Weekly</th><th class="money">Basic Salary</th><th class="money">Per Day</th><th class="money">Deduction</th><th class="money">Net Salary</th>
+          </tr></thead>
+          <tbody>
+            ${summaries.length ? summaries.map(x=>{
+              const attendanceRate = x.totalDays ? Math.round((x.present / x.totalDays) * 100) : 0;
+              const workingRate = x.totalDays ? Math.round((x.workingDays / x.totalDays) * 100) : 0;
+              return `<tr>
+                <td class="staff-cell">
+                  <div class="cell-name">
+                    <span class="avatar">${escapeHtml(x.staff.keyword)}</span>
+                    <div><strong>${escapeHtml(x.staff.name)}</strong><div class="muted" style="font-size:10.5px;margin-top:2px;">${attendanceRate}% present</div></div>
+                  </div>
+                </td>
+                <td class="att-count">${x.totalDays}</td>
+                <td><div class="att-mini"><span class="att-count">${x.workingDays}</span><div class="att-mini-bar"><div class="att-mini-fill" style="width:${workingRate}%"></div></div><span class="att-mini-pct">${workingRate}%</span></div></td>
+                <td><span class="att-payroll-badge">✓ ${x.present}</span></td>
+                <td class="att-count" style="color:var(--danger)">${x.absent}</td>
+                <td class="att-count">${x.leave}</td>
+                <td class="att-count">${x.holiday}</td>
+                <td class="att-count">${x.weekly}</td>
+                <td class="money">${fmtMoney(x.basic)}</td>
+                <td class="money">${fmtMoney(x.daily)}</td>
+                <td class="money deduct">${x.deduction ? '−'+fmtMoney(x.deduction) : '—'}</td>
+                <td class="money net">${fmtMoney(x.net)}</td>
+              </tr>`;
+            }).join('') : `<tr><td colspan="12" class="empty-row">${t('attNoActiveStaff')}</td></tr>`}
+          </tbody>
+          ${summaries.length ? `<tfoot><tr><th class="staff-cell">Monthly total</th><th>${daysInMonth}</th><th>—</th><th>${totalPresent}</th><th>${totalAbsent}</th><th>${totalLeave}</th><th>${summaries.reduce((n,x)=>n+x.holiday,0)}</th><th>${summaries.reduce((n,x)=>n+x.weekly,0)}</th><th class="money">${fmtMoney(summaries.reduce((n,x)=>n+x.basic,0))}</th><th class="money">—</th><th class="money deduct">${totalDeduction?'−'+fmtMoney(totalDeduction):'—'}</th><th class="money net">${fmtMoney(totalPayroll)}</th></tr></tfoot>` : ''}
+        </table>
+      </div>
+    </div>
+
     <div class="panel attendance-panel">
+      <div class="attendance-payroll-head">
+        <div><div class="attendance-payroll-title">Daily attendance</div><div class="attendance-payroll-sub">Click a status to cycle through attendance types when editing is unlocked.</div></div>
+        <div class="attendance-hint">${state.attendanceUnlocked ? 'Editing unlocked' : 'Today only'}</div>
+      </div>
       <div class="table-wrap attendance-table-wrap">
-      <table class="attendance-table" style="min-width:${Math.max(720, 180 + staffList.length * 145)}px;">
-        <thead>
-          <tr>
+        <table class="attendance-table" style="min-width:${Math.max(760, 190 + staffList.length * 145)}px;">
+          <thead><tr>
             <th class="attendance-sticky-head" style="position:sticky;left:0;background:var(--surface-2);z-index:12;">Date</th>
-            ${staffList.map(s => `<th class="attendance-sticky-head" style="text-align:center;">${escapeHtml(s.name)}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${Array.from({length:daysInMonth}, (_,i) => i+1).map(day => {
-            const date = makeDate(day);
-            const isToday = date === today;
-            const label = new Date(date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-            const rowStyle = isToday ? 'background:var(--accent-soft);' : '';
-            const dateStyle = `position:sticky;left:0;${isToday ? 'background:var(--accent-soft);' : 'background:var(--panel,#fff);'}z-index:1;white-space:nowrap;`;
-            return `<tr style="${rowStyle}" ${isToday ? 'data-att-today-row="true"' : ''}>
-              <td style="${dateStyle}"><strong>${label}</strong><div class="muted" style="font-size:11px;">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'})}</div></td>
-              ${staffList.map(staff => {
-                const record = findAttendance(staff.id, date);
-                const storedStatus = record ? record.status : null;
-                const displayStatus = storedStatus || (date < today ? 'auto-absent' : 'pending');
-                const editable = isEditableDate(date);
-                const disabledAttr = editable ? '' : 'disabled';
-                const title = editable ? '' : ` title="${escapeHtml(t('attLockedPastFuture'))}"`;
-                let content = '';
-                if (displayStatus === 'present') {
-                  content = `<button class="attend-btn" ${disabledAttr}${title} style="background:#dcfce7;color:#166534;border-color:#86efac;" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="present">✓ Present</button>`;
-                } else if (displayStatus === 'absent' || displayStatus === 'auto-absent') {
-                  content = `<button class="attend-btn" ${disabledAttr}${title} style="background:#fee2e2;color:#b91c1c;border-color:#fca5a5;" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="absent">Absent</button>`;
-                } else {
-                  content = `<button class="attend-btn" ${disabledAttr}${title} data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="pending">Present</button>`;
-                }
-                return `<td style="text-align:center;">${content}</td>`;
-              }).join('')}
-            </tr>`;
-          }).join('') || `<tr><td colspan="${staffList.length+1}">${t('attNoActiveStaff')}</td></tr>`}
-        </tbody>
-      </table>
+            ${staffList.map(s=>`<th class="attendance-sticky-head" style="text-align:center;">${escapeHtml(s.name)}</th>`).join('')}
+          </tr></thead>
+          <tbody>
+            ${Array.from({length:daysInMonth},(_,i)=>i+1).map(day=>{
+              const date=makeDate(day), isToday=date===today;
+              const label=new Date(date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+              const dateStyle=`position:sticky;left:0;${isToday?'background:var(--accent-soft);':'background:var(--surface);'}z-index:1;white-space:nowrap;`;
+              return `<tr class="${isToday?'att-today-row':''}" ${isToday?'data-att-today-row="true"':''} style="${isToday?'background:var(--accent-soft);':''}">
+                <td style="${dateStyle}"><strong>${label}</strong><div class="muted" style="font-size:11px;">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'})}</div></td>
+                ${staffList.map(staff=>{
+                  const current = findAttendance(staff.id,date);
+                  const currentMeta = attendanceStatusMeta(current?.status || 'pending');
+                  return `<td class="attendance-status-cell ${currentMeta.cls}" style="text-align:center;">${statusButton(staff,date)}</td>`;
+                }).join('')}
+              </tr>`;
+            }).join('') || `<tr><td colspan="${staffList.length+1}" class="empty-row">${t('attNoActiveStaff')}</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="attendance-legend">
+        ${Object.entries(ATT_STATUS_META).filter(([k])=>k!=='pending').map(([k,m])=>`<span class="legend-pill ${m.cls}"><i class="dot" style="background:currentColor"></i>${m.label}</span>`).join('')}
+        <span class="attendance-hint">Present automatically adds the staff salary to Expense › Business Expense.</span>
       </div>
     </div>
-    <div class="note-text" style="margin-top:10px;">${state.attendanceUnlocked ? t('attNoteText') : t('attUnlockHint')}</div>
+    <div class="note-text" style="margin-top:10px;">${state.attendanceUnlocked ? 'Editing is unlocked. Use the status buttons to record Present, Absent, Leave, Holiday or Weekly.' : 'Attendance is locked. You can still cycle through all attendance types for today.'}</div>
   `;
 
-  // When the Attendance panel is opened, smoothly bring today's row to
-  // the middle of the visible content area without affecting table data.
-  if (state.attendanceFocusToday){
-    state.attendanceFocusToday = false;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const todayRow = root.querySelector('[data-att-today-row="true"]');
-        if (todayRow){
-          todayRow.scrollIntoView({ behavior:'smooth', block:'center', inline:'nearest' });
-        }
-      });
-    });
+  if(state.attendanceFocusToday){
+    state.attendanceFocusToday=false;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      const todayRow=root.querySelector('[data-att-today-row="true"]');
+      if(todayRow) todayRow.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});
+    }));
   }
 
-  root.querySelector('#attMonthPrev').addEventListener('click', ()=>{
-    const nextYm = addMonths(ym,-1);
-    state.attendanceDate = nextYm+'-01';
+  root.querySelector('#attMonthPrev').addEventListener('click',()=>{state.attendanceDate=addMonths(ym,-1)+'-01';render();});
+  root.querySelector('#attMonthNext').addEventListener('click',()=>{state.attendanceDate=addMonths(ym,1)+'-01';render();});
+  root.querySelector('#attMonthSelect').addEventListener('change',e=>{if(e.target.value){state.attendanceDate=e.target.value+'-01';render();}});
+  root.querySelector('#attToday').addEventListener('click',()=>{state.attendanceDate=todayISO();state.attendanceFocusToday=true;render();});
+  root.querySelector('#attMonthlySummary').addEventListener('click',openMonthlySummaryModal);
+  root.querySelector('#attLockToggle').addEventListener('click',()=>{state.attendanceUnlocked=!state.attendanceUnlocked;render();});
+  root.querySelectorAll('[data-att-toggle]').forEach(button=>button.addEventListener('click',()=>{
+    const staffId=button.dataset.attToggle, date=button.dataset.attDate;
+    if(!state.attendanceUnlocked && date!==todayISO()){toast('Only today can be changed while attendance is locked.',true);return;}
+    const order=['pending','present','absent','leave','holiday','weekly'];
+    const current=button.dataset.attStatus||'pending';
+    const next=order[(order.indexOf(current)+1)%order.length];
+    setAttendance(staffId,date,next);
     render();
-  });
-  root.querySelector('#attMonthNext').addEventListener('click', ()=>{
-    const nextYm = addMonths(ym,1);
-    state.attendanceDate = nextYm+'-01';
-    render();
-  });
-  root.querySelector('#attMonthSelect').addEventListener('change', e=>{
-    if (e.target.value) { state.attendanceDate = e.target.value+'-01'; render(); }
-  });
-  root.querySelector('#attToday').addEventListener('click', ()=>{
-    state.attendanceDate = todayISO();
-    render();
-  });
-  root.querySelector('#attLockToggle').addEventListener('click', ()=>{
-    if (state.attendanceUnlocked){
-      state.attendanceUnlocked = false;
-      render();
-      return;
-    }
-    requireAdmin(() => {
-      state.attendanceUnlocked = true;
-      render();
-    }, t('authRequired'));
-  });
-  root.querySelectorAll('[data-att-toggle]').forEach(button => button.addEventListener('click', ()=>{
-    const staffId = button.dataset.attToggle;
-    const date = button.dataset.attDate;
-    if (!state.attendanceUnlocked && date !== todayISO()){
-      toast(t('attLockedPastFuture'), true);
-      return;
-    }
-    const current = findAttendance(staffId,date);
-    const nextStatus = current && current.status === 'present' ? 'absent' : 'present';
-    setAttendance(staffId,date,nextStatus);
-    render();
-    const staff = getStaff(staffId);
-    toast(nextStatus === 'present' ? `Present: ${staff ? staff.name : 'Staff'}` : `Absent: ${staff ? staff.name : 'Staff'}`);
+    const staff=getStaff(staffId); const meta=attendanceStatusMeta(next);
+    toast(`${staff?staff.name:'Staff'}: ${meta.label}`);
   }));
 }
 
 function openEditAttendanceModal(staffId, date){
-  requireAdmin(() => {
     const staff = getStaff(staffId);
     const a = findAttendance(staffId, date);
     const current = a ? a.status : 'none';
@@ -60241,9 +60374,12 @@ function openEditAttendanceModal(staffId, date){
         <div class="field">
           <label>${formatDateLong(date)}</label>
           <select id="editAttStatus">
-            <option value="none" ${current==='none'?'selected':''}>${t('attNoRecord')}</option>
-            <option value="present" ${current==='present'?'selected':''}>${t('attPresentPill')}</option>
-            <option value="absent" ${current==='absent'?'selected':''}>${t('attAbsentPill')}</option>
+            <option value="none" ${current==='none'?'selected':''}>Not marked</option>
+            <option value="present" ${current==='present'?'selected':''}>Present</option>
+            <option value="absent" ${current==='absent'?'selected':''}>Absent</option>
+            <option value="leave" ${current==='leave'?'selected':''}>Leave</option>
+            <option value="holiday" ${current==='holiday'?'selected':''}>Holiday</option>
+            <option value="weekly" ${current==='weekly'?'selected':''}>Weekly</option>
           </select>
         </div>
         <p class="note-text">${t('attNoteText')}</p>
@@ -60263,7 +60399,6 @@ function openEditAttendanceModal(staffId, date){
         });
       }
     });
-  }, t('authRequired'));
 }
 function openMonthlySummaryModal(){
   const staffList = getActiveStaff();
@@ -61034,7 +61169,6 @@ function openRecordPaymentModal(id){
   });
 }
 function confirmDeleteCreditor(id){
-  requireAdmin(() => {
     openModal({
       title:t('cdDeleteTitle'),
       bodyHtml:`<p>${t('cdDeleteBody')}</p>`,
@@ -61045,7 +61179,6 @@ function confirmDeleteCreditor(id){
         });
       }
     });
-  }, t('authRequired'));
 }
 /* =========================================================
    RENDER: ADMIN / SETTINGS
@@ -61054,8 +61187,6 @@ function renderAdmin(root){
   root.innerHTML = `
     <div class="tab-row">
       <button class="tab-btn ${state.adminTab==='staff'?'active':''}" data-atab="staff">${t('adminStaff')}</button>
-      <button class="tab-btn ${state.adminTab==='security'?'active':''}" data-atab="security">${t('adminSecurity')}</button>
-      <button class="tab-btn ${state.adminTab==='business'?'active':''}" data-atab="business">${t('adminBusiness')}</button>
       <button class="tab-btn ${state.adminTab==='ai'?'active':''}" data-atab="ai">${t('adminAi')}</button>
       <button class="tab-btn ${state.adminTab==='appearance'?'active':''}" data-atab="appearance">${t('adminAppearance')}</button>
       <button class="tab-btn ${state.adminTab==='data'?'active':''}" data-atab="data">${t('adminData')}</button>
@@ -61073,8 +61204,6 @@ function renderAdmin(root){
   }));
   const wrap = root.querySelector('#adminTabRoot');
   if (state.adminTab==='staff') renderAdminStaff(wrap);
-  else if (state.adminTab==='security') renderAdminSecurity(wrap);
-  else if (state.adminTab==='business') renderAdminBusiness(wrap);
   else if (state.adminTab==='ai') renderAdminAi(wrap);
   else if (state.adminTab==='appearance') renderAdminAppearance(wrap);
   else renderAdminData(wrap);
@@ -61331,9 +61460,9 @@ function renderAdminData(root){
   root.querySelector('#exportBtn').addEventListener('click', exportBackup);
   root.querySelector('#importBtn').addEventListener('click', () => root.querySelector('#importFile').click());
   root.querySelector('#importFile').addEventListener('change', handleImportFile);
-  root.querySelector('#resetBtn').addEventListener('click', () => requireAdmin(confirmResetData, t('authRequired')));
+  root.querySelector('#resetBtn').addEventListener('click', confirmResetData);
   const mig = root.querySelector('#migrateBtn');
-  if (mig) mig.addEventListener('click', () => requireAdmin(() => migrateLocalStorageToSupabase(false), 'Migrate to Supabase'));
+  if (mig) mig.addEventListener('click', () => migrateLocalStorageToSupabase(false));
 }
 function exportBackup(){
   const backup = { staff:DB.staff, attendance:DB.attendance, sales:DB.sales, expenses:DB.expenses, creditors:DB.creditors, settings:DB.settings, aiChat:DB.aiChat, exportedAt:new Date().toISOString() };
@@ -61352,7 +61481,6 @@ function handleImportFile(e){
   reader.onload = () => {
     try{
       const data = JSON.parse(reader.result);
-      requireAdmin(() => {
         DB.staff = data.staff || [];
         DB.attendance = data.attendance || [];
         DB.sales = data.sales || [];
@@ -61366,7 +61494,6 @@ function handleImportFile(e){
           render();
           toast(t('adminBackupRestored'));
         }).catch(err => toast('Restore loaded in memory, but Supabase save failed: ' + (err.message || err), true));
-      }, t('authDataRestore'));
     }catch(err){
       toast(t('adminInvalidBackup'), true);
     }
