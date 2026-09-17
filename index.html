@@ -671,6 +671,29 @@
   .attendance-payroll td:nth-child(8){background:rgba(124,58,237,.035);}
   @media(max-width:560px){.attendance-panel .attend-btn{min-width:96px;min-height:36px;padding:7px 10px;font-size:11.5px;}}
 
+
+  /* Expense nested navigation */
+  .expense-nav-group{margin:0 0 5px 0;}
+  .expense-nav-item{display:flex;align-items:center;width:100%;}
+  .expense-nav-item .expense-chevron{margin-left:auto;transition:transform .18s ease;opacity:.7;}
+  .expense-nav-group.open .expense-chevron{transform:rotate(90deg);}
+  .expense-subnav{display:none;margin:1px 0 8px 42px;padding:4px 0 5px 11px;border-left:2px solid var(--border);gap:2px;}
+  .expense-nav-group.open .expense-subnav{display:flex;flex-direction:column;}
+  .expense-subnav:before{content:"";display:block;}
+  .expense-subitem{padding-left:8px;}
+  .expense-subitem{position:relative;display:flex;align-items:center;width:100%;min-height:38px;padding:8px 10px 8px 12px;border:1px solid transparent;background:transparent;border-radius:9px;color:var(--ink-3);font-size:11.5px;font-weight:650;text-align:left;cursor:pointer;transition:background .16s ease,color .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease;}
+  .expense-subitem:hover{background:var(--surface-2);color:var(--ink-2);transform:translateX(2px);}
+  .expense-subitem.active{background:var(--accent-soft);color:var(--accent-text);border-color:var(--border-2);font-weight:800;box-shadow:0 2px 8px rgba(15,23,42,.08);}
+  .expense-subitem.active .expense-subdot{background:var(--accent);transform:scale(1.12);}
+  .expense-subitem.active span:not(.expense-subdot){color:var(--accent-text);}
+  .expense-subitem.active:before{content:"";position:absolute;left:-13px;top:7px;bottom:7px;width:3px;border-radius:99px;background:var(--accent);}
+  .expense-subitem.active .expense-subdot{width:7px;height:7px;opacity:1;box-shadow:0 0 0 3px var(--accent-soft);}
+  .expense-subitem:after{content:"›";margin-left:auto;font-size:15px;line-height:1;opacity:0;transform:translateX(-3px);transition:opacity .16s ease,transform .16s ease;}
+  .expense-subitem:hover:after,.expense-subitem.active:after{opacity:.8;transform:translateX(0);}
+  .expense-nav-item.active{box-shadow:inset 3px 0 0 var(--accent);}
+  .expense-subdot{width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:8px;opacity:.65;}
+  .expense-subitem.active .expense-subdot{opacity:1;}
+
   /* Staff Attendance: the table header scrolls naturally with the attendance rows. */
   .attendance-table-wrap{overflow-x:auto;overflow-y:visible;}
   .attendance-table thead th.attendance-sticky-head{
@@ -59300,6 +59323,7 @@ let state = {
   salesMonth: monthKey(todayISO()),
   salesYear: String(new Date().getFullYear()),
   expenseTab: EXPENSE_TYPES.PURCHASE,
+  expenseSubmenuOpen: false,
   expensePeriod: 'daily',
   expenseDates: { purchase: todayISO(), business: todayISO(), home: todayISO() },
   expenseMonths: { purchase: monthKey(todayISO()), business: monthKey(todayISO()), home: monthKey(todayISO()) },
@@ -59406,7 +59430,18 @@ function renderShell(){
       </div>
       <div class="nav-label">${t('menuLabel')}</div>
       <nav class="nav" id="mainNav">
-        ${navItems.map((item,i) => `
+        ${navItems.map((item,i) => item.id === 'expense' ? `
+          <div class="expense-nav-group ${state.expenseSubmenuOpen ? 'open':''}">
+            <button class="nav-item expense-nav-item ${state.view===item.id?'active':''}" data-nav="expense" title="${item.label}" aria-expanded="${state.expenseSubmenuOpen}">
+              ${icon(item.icon)}<span>${item.label}</span><span class="nav-kbd">${i+1}</span><span class="expense-chevron">›</span>
+            </button>
+            <div class="expense-subnav" aria-label="${item.label} subsections">
+              <button class="expense-subitem ${state.view==='expense' && state.expenseTab==='purchase'?'active':''}" data-expense-tab="purchase"><span class="expense-subdot"></span>${t('tabPurchase')}</button>
+              <button class="expense-subitem ${state.view==='expense' && state.expenseTab==='business'?'active':''}" data-expense-tab="business"><span class="expense-subdot"></span>${t('tabBusiness')}</button>
+              <button class="expense-subitem ${state.view==='expense' && state.expenseTab==='home'?'active':''}" data-expense-tab="home"><span class="expense-subdot"></span>${t('tabHome')}</button>
+            </div>
+          </div>
+        ` : `
           <button class="nav-item ${state.view===item.id?'active':''}" data-nav="${item.id}" title="${item.label}">
             ${icon(item.icon)}<span>${item.label}</span><span class="nav-kbd">${i+1}</span>
           </button>
@@ -59450,7 +59485,41 @@ function renderShell(){
       <div id="aiDrawerMount" style="display:flex;flex-direction:column;height:100%;"></div>
     </aside>
   `;
-  app.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', () => navigate(b.dataset.nav)));
+  app.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', () => {
+    const view = b.dataset.nav;
+    const expenseGroup = b.closest('.expense-nav-group');
+
+    if (view === 'expense') {
+      if (state.view !== 'expense') {
+        state.view = 'expense';
+        state.expenseSubmenuOpen = true;
+      } else {
+        state.expenseSubmenuOpen = !state.expenseSubmenuOpen;
+      }
+
+      // The sidebar itself is not rebuilt on every render, so update the
+      // existing Expense group immediately as well as updating app state.
+      if (expenseGroup) {
+        expenseGroup.classList.toggle('open', state.expenseSubmenuOpen);
+        b.setAttribute('aria-expanded', String(state.expenseSubmenuOpen));
+      }
+      render();
+    } else {
+      state.expenseSubmenuOpen = false;
+      const openExpenseGroup = app.querySelector('.expense-nav-group.open');
+      if (openExpenseGroup) openExpenseGroup.classList.remove('open');
+      const expenseButton = app.querySelector('.expense-nav-item');
+      if (expenseButton) expenseButton.setAttribute('aria-expanded', 'false');
+      navigate(view);
+    }
+  }));
+  app.querySelectorAll('[data-expense-tab]').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation();
+    state.expenseTab = b.dataset.expenseTab;
+    state.expenseSubmenuOpen = true;
+    state.view = 'expense';
+    render();
+  }));
   app.querySelectorAll('[data-theme-mode]').forEach(b => b.addEventListener('click', () => setThemeMode(b.dataset.themeMode)));
   app.querySelector('#topQuickSale').addEventListener('click', () => navigate('sales'));
   app.querySelector('#langToggle').addEventListener('click', toggleLang);
@@ -59461,6 +59530,20 @@ function render(){
   const brand = document.getElementById('brandName');
   if (brand) brand.textContent = DB.settings.businessName || 'Pharmacy Records';
   document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active', b.dataset.nav === state.view));
+
+  // Synchronize the nested Expense menu on every render. The sidebar is
+  // mounted once, so its initial template classes cannot track later
+  // Business Purchase / Business Expense / Home Expense clicks by themselves.
+  const expenseGroup = document.querySelector('.expense-nav-group');
+  const expenseButton = document.querySelector('.expense-nav-item');
+  if (expenseGroup) expenseGroup.classList.toggle('open', !!state.expenseSubmenuOpen);
+  if (expenseButton) expenseButton.setAttribute('aria-expanded', String(!!state.expenseSubmenuOpen));
+  document.querySelectorAll('[data-expense-tab]').forEach(b => {
+    const active = state.view === 'expense' && b.dataset.expenseTab === state.expenseTab;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-current', active ? 'page' : 'false');
+  });
+
   const navItems = getNavItems();
   const nav = navItems.find(n=>n.id===state.view);
   document.getElementById('topTitle').textContent = nav ? nav.label : '';
@@ -60471,11 +60554,6 @@ function renderExpense(root){
   const count = expensesForPeriod(range.start, range.end, EXPENSE_TYPES[tab.toUpperCase()]).length;
 
   root.innerHTML = `
-    <div class="tab-row expense-tabs">
-      <button class="tab-btn ${tab==='purchase'?'active':''}" data-tab="purchase">${t('tabPurchase')}</button>
-      <button class="tab-btn ${tab==='business'?'active':''}" data-tab="business">${t('tabBusiness')}</button>
-      <button class="tab-btn ${tab==='home'?'active':''}" data-tab="home">${t('tabHome')}</button>
-    </div>
     <div class="expense-period-row">
       <div class="expense-period-switch" aria-label="Expense period">
         <button class="expense-period-btn ${period==='daily'?'active':''}" data-period="daily">${t('expenseDaily')}</button>
@@ -60508,7 +60586,6 @@ function renderExpense(root){
     <div id="expenseTableWrap"></div>
   `;
 
-  root.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', ()=>{ state.expenseTab = b.dataset.tab; render(); }));
   root.querySelectorAll('[data-period]').forEach(b => b.addEventListener('click', ()=>{ state.expensePeriod = b.dataset.period; render(); }));
   root.querySelector('#expPrev').addEventListener('click', ()=>{
     if(period==='daily') state.expenseDates[tab] = addDays(date,-1);
