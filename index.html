@@ -58453,12 +58453,11 @@ const STORAGE_KEYS = {
 */
 const SUPABASE_URL = 'https://ixvttrfjuyzkwwemiwno.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dnR0cmZqdXl6a3d3ZW1pd25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0ODQyNjUsImV4cCI6MjEwNTA2MDI2NX0.FDgBkAqfDmveHLsvm4hB3kYo960jYYZCN93URq6iK2c';
-const SUPABASE_APP_INSTANCE_ID = 'default';
+const SUPABASE_APP_INSTANCE_ID = 'fresh-pharmacy-records-v1';
 const SUPABASE_TABLES = {
   staff:'staff', attendance:'attendance', sales:'sales', expenses:'expenses',
   creditors:'creditors', settings:'settings', aiChat:'ai_chat'
 };
-const DEFAULT_ADMIN_PASSWORD = '1234'; // CHANGE THIS in Admin > Security for real use
 const DEVELOPER_AI_PASSWORD = '0102'; // Developer-only access to Admin > AI Assistant
 let developerAiUnlocked = false;
 const EXPENSE_TYPES = { PURCHASE:'purchase', BUSINESS:'business', HOME:'home' };
@@ -58635,6 +58634,16 @@ function writeCache(name){
   catch(e){ console.error('Failed writing cache', name, e); }
 }
 function cacheAll(){ ['staff','attendance','sales','expenses','creditors','settings','aiChat'].forEach(writeCache); }
+function startFreshAppOnce(){
+  const freshFlag = 'pharmacy_fresh_start_v1';
+  try{
+    if (localStorage.getItem(freshFlag) === '1') return;
+    Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+    localStorage.setItem(freshFlag, '1');
+  }catch(e){ console.error('Failed to initialize fresh app state', e); }
+  DB = { staff:[], attendance:[], sales:[], expenses:[], creditors:[], settings:{}, aiChat:[] };
+}
+
 async function loadAll(){
   try{
     initSupabase();
@@ -58649,7 +58658,7 @@ async function loadAll(){
     DB.settings = settings || null;
     DB.aiChat = aiChat || [];
     if (!DB.settings){
-      DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
+      DB.settings = { businessName:'Pharmacy Records', currency:'৳', theme:'system', accent:'emerald' };
       await saveKey('settings');
     }
     normaliseLoadedData();
@@ -58674,7 +58683,7 @@ function loadAllFromLocalCache(){
   DB.settings = readCache('settings', null);
   DB.aiChat = readCache('aiChat', []);
   if (DB.staff === null) DB.staff = demoStaff();
-  if (DB.settings === null) DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
+  if (DB.settings === null) DB.settings = { businessName:'Pharmacy Records', currency:'৳', theme:'system', accent:'emerald' };
   normaliseLoadedData();
   if (DB.settings && DB.settings.ai && /^AQ\./.test(String(DB.settings.ai.apiKey || ''))){
     DB.settings.ai.apiKey = '';
@@ -58688,7 +58697,7 @@ function normaliseLoadedData(){
   if (!Array.isArray(DB.expenses)) DB.expenses = [];
   if (!Array.isArray(DB.creditors)) DB.creditors = [];
   if (!Array.isArray(DB.aiChat)) DB.aiChat = [];
-  if (!DB.settings || typeof DB.settings !== 'object') DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
+  if (!DB.settings || typeof DB.settings !== 'object') DB.settings = { businessName:'Pharmacy Records', currency:'৳', theme:'system', accent:'emerald' };
   if (!DB.settings.theme) DB.settings.theme = 'system';
   if (!DB.settings.accent) DB.settings.accent = 'emerald';
   DB.settings.ai = Object.assign(defaultAiSettings(), DB.settings.ai || {});
@@ -58781,11 +58790,7 @@ async function migrateLocalStorageToSupabase(confirmOverwrite){
   toast('Local browser data migrated to Supabase.');
 }
 function demoStaff(){
-  return [
-    { id: uid('st'), name:'Jamil', keyword:'J', dailySalary:500, active:true },
-    { id: uid('st'), name:'Noman', keyword:'N', dailySalary:450, active:true },
-    { id: uid('st'), name:'Rahim', keyword:'R', dailySalary:500, active:true },
-  ];
+  return [];
 }
 
 /* =========================================================
@@ -59206,12 +59211,10 @@ function getNavItems(){ return NAV_KEYS.map(n => ({ ...n, label: t(n.labelKey) }
 const NAV_ITEMS = NAV_KEYS.map(n => ({ ...n, label: n.id })); // placeholder; actual labels via getNavItems()
 
 function navigate(view){
-  if (view === 'admin' && !state.adminUnlocked){
-    requireAdmin(() => {
-      state.adminUnlocked = true;
-      state.view = 'admin';
-      render();
-    }, t('authRequired'));
+  if (view === 'admin'){
+    state.adminUnlocked = true;
+    state.view = 'admin';
+    render();
     return;
   }
   if (state.view === 'admin' && view !== 'admin'){
@@ -60209,10 +60212,8 @@ function renderAttendance(root){
       render();
       return;
     }
-    requireAdmin(() => {
-      state.attendanceUnlocked = true;
-      render();
-    }, t('authRequired'));
+    state.attendanceUnlocked = true;
+    render();
   });
   root.querySelectorAll('[data-att-toggle]').forEach(button => button.addEventListener('click', ()=>{
     const staffId = button.dataset.attToggle;
@@ -60231,8 +60232,8 @@ function renderAttendance(root){
 }
 
 function openEditAttendanceModal(staffId, date){
-  requireAdmin(() => {
-    const staff = getStaff(staffId);
+  const staff = getStaff(staffId);
+  if (!staff) return;
     const a = findAttendance(staffId, date);
     const current = a ? a.status : 'none';
     openModal({
@@ -60263,7 +60264,6 @@ function openEditAttendanceModal(staffId, date){
         });
       }
     });
-  }, t('authRequired'));
 }
 function openMonthlySummaryModal(){
   const staffList = getActiveStaff();
@@ -61054,8 +61054,6 @@ function renderAdmin(root){
   root.innerHTML = `
     <div class="tab-row">
       <button class="tab-btn ${state.adminTab==='staff'?'active':''}" data-atab="staff">${t('adminStaff')}</button>
-      <button class="tab-btn ${state.adminTab==='security'?'active':''}" data-atab="security">${t('adminSecurity')}</button>
-      <button class="tab-btn ${state.adminTab==='business'?'active':''}" data-atab="business">${t('adminBusiness')}</button>
       <button class="tab-btn ${state.adminTab==='ai'?'active':''}" data-atab="ai">${t('adminAi')}</button>
       <button class="tab-btn ${state.adminTab==='appearance'?'active':''}" data-atab="appearance">${t('adminAppearance')}</button>
       <button class="tab-btn ${state.adminTab==='data'?'active':''}" data-atab="data">${t('adminData')}</button>
@@ -61073,8 +61071,6 @@ function renderAdmin(root){
   }));
   const wrap = root.querySelector('#adminTabRoot');
   if (state.adminTab==='staff') renderAdminStaff(wrap);
-  else if (state.adminTab==='security') renderAdminSecurity(wrap);
-  else if (state.adminTab==='business') renderAdminBusiness(wrap);
   else if (state.adminTab==='ai') renderAdminAi(wrap);
   else if (state.adminTab==='appearance') renderAdminAppearance(wrap);
   else renderAdminData(wrap);
@@ -61230,34 +61226,14 @@ function openEditStaffModal(id){
 function renderAdminSecurity(root){
   root.innerHTML = `
     <div class="settings-grid">
-    <div class="panel pad settings-card">
-      <h3>${t('adminChangePwTitle')}</h3>
-      <p class="desc">${t('adminChangePwDesc')}</p>
-      <div class="stack">
-        <div class="field"><label for="curPw">${t('adminCurPw')}</label><input type="password" id="curPw" autocomplete="current-password"></div>
-        <div class="field"><label for="newPw">${t('adminNewPw')}</label><input type="password" id="newPw" autocomplete="new-password"></div>
-        <div class="field"><label for="newPw2">${t('adminConfirmPw')}</label><input type="password" id="newPw2" autocomplete="new-password"></div>
+      <div class="panel pad settings-card">
+        <h3>${t('adminChangePwTitle')}</h3>
+        <p class="desc">Password protection has been disabled for this admin panel.</p>
       </div>
-      <div class="field-error" id="pwErr"></div>
-      <div style="margin-top:6px;"><button class="btn primary" id="pwSave">${icon('lock')} ${t('adminUpdatePw')}</button></div>
-    </div>
     </div>
   `;
-  root.querySelector('#pwSave').addEventListener('click', ()=>{
-    const cur = root.querySelector('#curPw').value;
-    const n1 = root.querySelector('#newPw').value;
-    const n2 = root.querySelector('#newPw2').value;
-    const err = root.querySelector('#pwErr');
-    if (cur !== DB.settings.adminPassword){ err.textContent = t('adminPwIncorrect'); return; }
-    if (!n1){ err.textContent = t('adminPwEnterNew'); return; }
-    if (n1 !== n2){ err.textContent = t('adminPwMismatch'); return; }
-    DB.settings.adminPassword = n1;
-    saveKey('settings');
-    err.textContent = '';
-    toast(t('adminPwUpdated'));
-    root.querySelector('#curPw').value=''; root.querySelector('#newPw').value=''; root.querySelector('#newPw2').value='';
-  });
 }
+
 function renderAdminBusiness(root){
   root.innerHTML = `
     <div class="settings-grid">
@@ -61331,9 +61307,9 @@ function renderAdminData(root){
   root.querySelector('#exportBtn').addEventListener('click', exportBackup);
   root.querySelector('#importBtn').addEventListener('click', () => root.querySelector('#importFile').click());
   root.querySelector('#importFile').addEventListener('change', handleImportFile);
-  root.querySelector('#resetBtn').addEventListener('click', () => requireAdmin(confirmResetData, t('authRequired')));
+  root.querySelector('#resetBtn').addEventListener('click', confirmResetData);
   const mig = root.querySelector('#migrateBtn');
-  if (mig) mig.addEventListener('click', () => requireAdmin(() => migrateLocalStorageToSupabase(false), 'Migrate to Supabase'));
+  if (mig) mig.addEventListener('click', () => migrateLocalStorageToSupabase(false));
 }
 function exportBackup(){
   const backup = { staff:DB.staff, attendance:DB.attendance, sales:DB.sales, expenses:DB.expenses, creditors:DB.creditors, settings:DB.settings, aiChat:DB.aiChat, exportedAt:new Date().toISOString() };
@@ -61352,21 +61328,19 @@ function handleImportFile(e){
   reader.onload = () => {
     try{
       const data = JSON.parse(reader.result);
-      requireAdmin(() => {
-        DB.staff = data.staff || [];
-        DB.attendance = data.attendance || [];
-        DB.sales = data.sales || [];
-        DB.expenses = data.expenses || [];
-        DB.creditors = data.creditors || [];
-        DB.settings = Object.assign({ theme:DB.settings.theme, accent:DB.settings.accent }, data.settings || DB.settings);
-        DB.settings.ai = Object.assign(defaultAiSettings(), DB.settings.ai || {});
-        DB.aiChat = Array.isArray(data.aiChat) ? data.aiChat : [];
-        saveAllToSupabase().then(() => {
-          applyTheme(true);
-          render();
-          toast(t('adminBackupRestored'));
-        }).catch(err => toast('Restore loaded in memory, but Supabase save failed: ' + (err.message || err), true));
-      }, t('authDataRestore'));
+      DB.staff = data.staff || [];
+      DB.attendance = data.attendance || [];
+      DB.sales = data.sales || [];
+      DB.expenses = data.expenses || [];
+      DB.creditors = data.creditors || [];
+      DB.settings = Object.assign({ theme:DB.settings.theme, accent:DB.settings.accent }, data.settings || DB.settings);
+      DB.settings.ai = Object.assign(defaultAiSettings(), DB.settings.ai || {});
+      DB.aiChat = Array.isArray(data.aiChat) ? data.aiChat : [];
+      saveAllToSupabase().then(() => {
+        applyTheme(true);
+        render();
+        toast(t('adminBackupRestored'));
+      }).catch(err => toast('Restore loaded in memory, but Supabase save failed: ' + (err.message || err), true));
     }catch(err){
       toast(t('adminInvalidBackup'), true);
     }
@@ -63627,7 +63601,8 @@ function toggleLang(){
    INITIALIZATION
 ========================================================= */
 async function initApp(){
-  await loadAll();
+  await startFreshAppOnce();
+loadAll();
   applyTheme(false);
   render();
   window.dashboardCountsReady = true;
