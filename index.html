@@ -739,7 +739,7 @@
      text and the first status cell (previous/future dates only — today is
      always editable) and toggles whether that single date can be edited,
      independent of the global Unlock editing switch. */
-  .att-date-cell{display:flex;align-items:center;min-width:210px;}
+  .att-date-cell{position:relative;display:flex;align-items:center;justify-content:space-between;min-width:210px;}
   .att-date-cell .att-date-text{flex-shrink:0;}
   .att-date-cell .att-date-spacer{flex:1;min-width:14px;}
   .att-date-lock{
@@ -758,6 +758,17 @@
   .att-date-lock.is-unlocked:hover{background:var(--accent-dark);border-color:var(--accent-dark);}
   .att-date-cell.is-unlocked-date .att-date-text strong{color:var(--accent-text);}
   @media (prefers-reduced-motion: reduce){ .att-date-lock{transition:none;} }
+
+  /* Bulk "mark all staff" quick buttons shown per date row: clicking one
+     sets every active staff member's status for that date in one click. */
+  .att-bulk-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:4px;flex-shrink:0;margin:0;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,visibility .16s ease;}
+  .attendance-table tbody tr:hover .att-bulk-mark,
+  .attendance-table tbody tr:focus-within .att-bulk-mark{opacity:1;visibility:visible;pointer-events:auto;}
+  .att-bulk-btn{width:26px;height:26px;border-radius:7px;border:1.5px solid transparent;font-size:11px;font-weight:800;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;}
+  .att-bulk-btn:hover:not(:disabled){transform:translateY(-1px) scale(1.06);box-shadow:0 3px 9px rgba(15,23,42,.14);}
+  .att-bulk-btn:active:not(:disabled){transform:scale(.92);}
+  .att-bulk-btn:disabled{opacity:.35;cursor:not-allowed;}
+  @media(max-width:560px){.att-bulk-btn{width:23px;height:23px;font-size:10px;}.att-bulk-mark{gap:3px;}}
 
   /* =========================================================
      TABLES / PANELS
@@ -60462,10 +60473,15 @@ function renderAttendance(root){
               const dateStyle=`position:sticky;left:0;${isToday?'background:var(--accent-soft);':'background:var(--surface);'}z-index:1;white-space:nowrap;`;
               const dateUnlocked = state.attendanceUnlockedDates.has(date);
               const dateLockHtml = isToday ? '' : `<button type="button" class="att-date-lock ${dateUnlocked?'is-unlocked':''}" data-att-date-lock="${date}" title="${dateUnlocked ? t('attDateLockedClickToLock') : t('attDateUnlockedClickToUnlock')}" aria-label="${dateUnlocked ? t('attDateLockedClickToLock') : t('attDateUnlockedClickToUnlock')}">${icon(dateUnlocked ? 'unlock' : 'lock')}</button>`;
+              const dateEditable = isEditableDate(date);
+              const bulkMarkHtml = staffList.length ? `<div class="att-bulk-mark">${Object.entries(ATT_STATUS_META).filter(([k])=>k!=='pending').map(([k,m])=>
+                `<button type="button" class="att-bulk-btn ${m.cls}" data-att-bulk="${k}" data-att-bulk-date="${date}" ${dateEditable?'':'disabled'} title="Mark all staff ${m.label} on ${label}">${m.short}</button>`
+              ).join('')}</div>` : '';
               return `<tr class="${isToday?'att-today-row':''}" ${isToday?'data-att-today-row="true"':''} style="${isToday?'background:var(--accent-soft);':''}">
                 <td style="${dateStyle}">
                   <div class="att-date-cell ${dateUnlocked?'is-unlocked-date':''}">
                     <div class="att-date-text"><strong>${label}</strong><div class="muted" style="font-size:11px;">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'})}</div></div>
+                    ${bulkMarkHtml}
                     <div class="att-date-spacer"></div>
                     ${dateLockHtml}
                   </div>
@@ -60514,6 +60530,28 @@ function renderAttendance(root){
     }
     render();
   }));
+  // Bulk status buttons: mark every active staff member for the selected date.
+  // Clicking the same bulk button again clears that status for everyone.
+  root.querySelectorAll('[data-att-bulk]').forEach(button=>button.addEventListener('click',()=>{
+    const date = button.dataset.attBulkDate;
+    const status = button.dataset.attBulk;
+    if(!isEditableDate(date)){ toast(t('attLockedPastFuture'), true); return; }
+    if(!ATT_STATUS_META[status] || status === 'pending') return;
+
+    const alreadyAppliedToEveryone = staffList.length > 0 && staffList.every(staff => {
+      const record = findAttendance(staff.id, date);
+      return record && record.status === status;
+    });
+    const nextStatus = alreadyAppliedToEveryone ? 'pending' : status;
+
+    staffList.forEach(staff => setAttendance(staff.id, date, nextStatus));
+    render();
+    const meta = attendanceStatusMeta(status);
+    toast(alreadyAppliedToEveryone
+      ? `All staff: ${meta.label} cleared — ${formatDateLong(date)}`
+      : `All staff: ${meta.label} — ${formatDateLong(date)}`);
+  }));
+
   root.querySelectorAll('[data-att-toggle]').forEach(button=>button.addEventListener('click',()=>{
     const staffId=button.dataset.attToggle, date=button.dataset.attDate;
     if(!isEditableDate(date)){toast(t('attLockedPastFuture'),true);return;}
