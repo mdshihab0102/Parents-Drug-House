@@ -588,6 +588,39 @@
   .expense-period-btn{border:0;background:transparent;color:var(--ink-2);padding:8px 15px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all var(--t-fast) var(--ease);}
   .expense-period-btn:hover{color:var(--ink);background:var(--surface-2);}
   .expense-period-btn.active{color:var(--on-accent);background:var(--accent);box-shadow:0 5px 14px -8px var(--accent-glow);}
+  /* Expense: big dynamic section-name banner (fills the space between the
+     period switch and the summary card; announces which expense sub-section
+     — Business Purchase / Business Expense / Home Expense — is active). */
+  .expense-tab-banner{
+    flex:1;min-width:220px;min-height:48px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    padding:10px 20px;border-radius:var(--r-md);
+    border:1px solid var(--border);
+    background:linear-gradient(135deg, var(--accent-soft), var(--surface));
+    overflow:hidden;position:relative;
+  }
+  .expense-tab-banner .etb-dot{
+    width:9px;height:9px;border-radius:50%;flex-shrink:0;
+    box-shadow:0 0 0 4px color-mix(in srgb, var(--etb-color, var(--accent)) 20%, transparent);
+    background:var(--etb-color, var(--accent));
+  }
+  .expense-tab-banner .etb-text{
+    font-size:clamp(16px, 1.7vw, 22px);
+    font-weight:800;letter-spacing:-.015em;
+    color:var(--etb-color, var(--accent-text));
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    animation:etbIn var(--t-slow) var(--ease-out) both;
+  }
+  @keyframes etbIn{
+    from{opacity:0;transform:translateY(8px) scale(.97);}
+    to{opacity:1;transform:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .expense-tab-banner .etb-text{animation:none;}
+  }
+  @media (max-width:900px){
+    .expense-tab-banner{min-width:100%;order:-1;}
+  }
   .expense-summary-card{display:flex;align-items:center;gap:10px;min-width:215px;padding:9px 13px;border:1px solid var(--border);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-xs);}
   .expense-summary-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-text);flex-shrink:0;}
   .expense-summary-icon svg{width:15px;height:15px;}
@@ -60553,6 +60586,11 @@ function renderExpense(root){
   const periodLabel = expensePeriodLabel(period, date, month, year);
   const total = expensesForPeriod(range.start, range.end, EXPENSE_TYPES[tab.toUpperCase()]).reduce((s,r)=>s+moneyValue(r.amount),0);
   const count = expensesForPeriod(range.start, range.end, EXPENSE_TYPES[tab.toUpperCase()]).length;
+  const tabMeta = {
+    purchase:{ key:'tabPurchase', color:'var(--cat-purchase)' },
+    business:{ key:'tabBusiness', color:'var(--cat-business)' },
+    home:{ key:'tabHome', color:'var(--cat-home)' }
+  }[tab];
 
   root.innerHTML = `
     <div class="expense-period-row">
@@ -60560,6 +60598,10 @@ function renderExpense(root){
         <button class="expense-period-btn ${period==='daily'?'active':''}" data-period="daily">${t('expenseDaily')}</button>
         <button class="expense-period-btn ${period==='monthly'?'active':''}" data-period="monthly">${t('expenseMonthly')}</button>
         <button class="expense-period-btn ${period==='yearly'?'active':''}" data-period="yearly">${t('expenseYearly')}</button>
+      </div>
+      <div class="expense-tab-banner" id="expenseTabBanner" data-tab="${tab}" style="--etb-color:${tabMeta.color}">
+        <span class="etb-dot"></span>
+        <span class="etb-text" key="${tab}">${escapeHtml(t(tabMeta.key))}</span>
       </div>
       <div class="expense-summary-card">
         <div class="expense-summary-icon">${icon('wallet')}</div>
