@@ -63023,13 +63023,14 @@ function renderAdminAi(root){
   q('#aiTestBtn').addEventListener('click', () => {
     aiTestConnection(q('#aiTestBtn'), statusEl, { model: currentDraftModel(), apiKey: keyInput.value.trim() });
   });
-  q('#aiSaveBtn').addEventListener('click', () => {
+  q('#aiSaveBtn').addEventListener('click', async () => {
     const model = currentDraftModel();
     if (!model){
       statusEl.className = 'field-error';
       statusEl.textContent = t('adminAiModelMissing');
       return;
     }
+    const btn = q('#aiSaveBtn');
     const target = aiSettings();
     target.enabled = draft.enabled;
     target.apiKey = keyInput.value.trim();
@@ -63039,11 +63040,28 @@ function renderAdminAi(root){
     target.dataAccess = draft.dataAccess;
     target.systemPrompt = promptInput.value.trim();
     target.keepHistory = draft.keepHistory;
-    saveKey('settings');
-    syncAiFab();
-    statusEl.className = 'field-hint ok';
-    statusEl.textContent = t('adminAiSaved');
-    toast(t('adminAiSaved'));
+
+    // Wait for the Supabase upsert to finish before reporting success.
+    if (btn) btn.disabled = true;
+    statusEl.className = 'field-hint';
+    statusEl.textContent = 'Saving…';
+    try {
+      const result = await saveKey('settings');
+      if (!result || !result.ok){
+        throw (result && result.error) || new Error('Could not save settings to Supabase.');
+      }
+      syncAiFab();
+      statusEl.className = 'field-hint ok';
+      statusEl.textContent = t('adminAiSaved');
+      toast(t('adminAiSaved'));
+    } catch (err) {
+      console.error('AI settings save failed:', err);
+      statusEl.className = 'field-error';
+      statusEl.textContent = 'Could not save AI settings. Check your Supabase connection and RLS policies.';
+      toast('Could not save AI settings to Supabase.');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
   });
   q('#aiWipeChat').addEventListener('click', aiConfirmClear);
 
