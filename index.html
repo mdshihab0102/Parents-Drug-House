@@ -727,12 +727,18 @@
   .expense-subdot{width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:8px;opacity:.65;}
   .expense-subitem.active .expense-subdot{opacity:1;}
 
-  /* Staff Attendance: the table header scrolls naturally with the attendance rows. */
+  /* Follow page scrolling without losing the table's horizontal scrolling.
+     The original header stays in the table, keeping every column aligned. */
   .attendance-table-wrap{overflow-x:auto;overflow-y:visible;}
+  .attendance-table thead{
+    position:relative;
+    z-index:6;
+    transform:translateY(var(--attendance-head-offset, 0px));
+    will-change:transform;
+  }
   .attendance-table thead th.attendance-sticky-head{
-    position:static;
     background:var(--surface-2);
-    box-shadow:none;
+    box-shadow:0 1px 0 var(--border), 0 10px 18px -16px rgba(15,23,42,.45);
   }
 
   /* Per-date attendance lock: a lock icon sits centered between the date
@@ -63965,6 +63971,52 @@ function toggleLang(){
   _lastView = null;
   render();
 }
+
+/* =========================================================
+   ATTENDANCE HEADER FOLLOW-SCROLL
+   Keeps the Daily attendance header row (Date + staff names) readable while
+   the page scrolls. The row stays inside <thead> in normal flow, so every
+   column and the sticky Date column keep working. JS only nudges it down by
+   exactly how far the table has scrolled past the topbar, which means it
+   slides back into its real position when you scroll up and stops at the
+   last row instead of being locked to one spot on screen.
+========================================================= */
+(function attendanceHeaderFollow(){
+  let queued = false;
+
+  function topbarOffset(){
+    const topbar = document.querySelector('.topbar');
+    if(!topbar) return 0;
+    if(getComputedStyle(topbar).position !== 'sticky') return 0;
+    return topbar.getBoundingClientRect().height;
+  }
+
+  function update(){
+    queued = false;
+    const table = document.querySelector('.attendance-table');
+    if(!table || !table.tHead) return;
+    const headH = table.tHead.offsetHeight;
+    const limit = table.offsetHeight - headH;           // never travel past the last row
+    if(limit <= 0){ table.style.setProperty('--attendance-head-offset','0px'); return; }
+    const tableTop = table.getBoundingClientRect().top; // border box: the transform does not affect it
+    const offset = Math.min(Math.max(topbarOffset() - tableTop, 0), limit);
+    table.style.setProperty('--attendance-head-offset', offset.toFixed(1)+'px');
+  }
+
+  function schedule(){
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  }
+
+  window.addEventListener('scroll', schedule, {passive:true});
+  window.addEventListener('resize', schedule);
+  // The app re-renders by replacing innerHTML, which drops the inline offset,
+  // so recompute whenever the view is rebuilt.
+  const host = document.getElementById('app') || document.body;
+  new MutationObserver(schedule).observe(host, {childList:true, subtree:true});
+  schedule();
+})();
 
 /* =========================================================
    INITIALIZATION
