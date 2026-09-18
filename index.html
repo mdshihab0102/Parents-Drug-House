@@ -735,6 +735,30 @@
     box-shadow:none;
   }
 
+  /* Per-date attendance lock: a lock icon sits centered between the date
+     text and the first status cell (previous/future dates only — today is
+     always editable) and toggles whether that single date can be edited,
+     independent of the global Unlock editing switch. */
+  .att-date-cell{display:flex;align-items:center;min-width:210px;}
+  .att-date-cell .att-date-text{flex-shrink:0;}
+  .att-date-cell .att-date-spacer{flex:1;min-width:14px;}
+  .att-date-lock{
+    flex-shrink:0;border:1.5px solid var(--accent);background:var(--accent-soft);
+    color:var(--accent-text);width:34px;height:34px;border-radius:9px;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+    opacity:.55;transform:scale(.92);
+    box-shadow:0 1px 4px rgba(15,23,42,.06);
+    transition:opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--spring), background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast) var(--ease);
+  }
+  .att-date-lock svg{width:18px;height:18px;}
+  tr:not(.att-today-row):hover .att-date-lock{opacity:1;transform:scale(1.06);box-shadow:0 4px 10px -2px var(--accent-glow);}
+  .att-date-lock:hover{background:var(--accent);color:var(--on-accent);box-shadow:0 6px 14px -4px var(--accent-glow);}
+  .att-date-lock:active{transform:scale(.92);}
+  .att-date-lock.is-unlocked{opacity:1;transform:scale(1);background:var(--accent);color:var(--on-accent);border-color:var(--accent);box-shadow:0 4px 12px -3px var(--accent-glow);}
+  .att-date-lock.is-unlocked:hover{background:var(--accent-dark);border-color:var(--accent-dark);}
+  .att-date-cell.is-unlocked-date .att-date-text strong{color:var(--accent-text);}
+  @media (prefers-reduced-motion: reduce){ .att-date-lock{transition:none;} }
+
   /* =========================================================
      TABLES / PANELS
   ========================================================= */
@@ -58639,6 +58663,7 @@ const ICONS = {
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
   lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  unlock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-2"/></svg>',
   users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   bank:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
   download:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
@@ -59365,6 +59390,7 @@ let state = {
   adminTab: 'staff',
   adminUnlocked: false,
   attendanceUnlocked: false,
+  attendanceUnlockedDates: new Set(),
   attendanceFocusToday: false,
   saleModalStaffId: null,
   aiDraft: '',
@@ -60343,7 +60369,7 @@ function renderAttendance(root){
   const today = todayISO();
   const monthTitle = monthLabelLong(ym);
   const makeDate = day => `${ym}-${String(day).padStart(2,'0')}`;
-  const isEditableDate = date => state.attendanceUnlocked || date === today;
+  const isEditableDate = date => state.attendanceUnlocked || date === today || state.attendanceUnlockedDates.has(date);
   const summaries = staffList.map(s => attendanceMonthStats(s.id, ym));
   const totalPresent = summaries.reduce((n,x)=>n+x.present,0);
   const totalAbsent = summaries.reduce((n,x)=>n+x.absent,0);
@@ -60357,7 +60383,7 @@ function renderAttendance(root){
     const meta = attendanceStatusMeta(status);
     const editable = isEditableDate(date);
     const disabledAttr = editable ? '' : 'disabled';
-    const title = editable ? 'Click to change status' : 'Only today can be changed while attendance is locked; all attendance types are available';
+    const title = editable ? 'Click to change status' : t('attLockedPastFuture');
     return `<button class="attend-btn ${meta.cls}" ${disabledAttr} title="${escapeHtml(title)}" data-att-toggle="${staff.id}" data-att-date="${date}" data-att-status="${status}">
       <span style="font-weight:800;min-width:13px;text-align:center;">${meta.icon}</span><span>${meta.label}</span>
     </button>`;
@@ -60434,8 +60460,16 @@ function renderAttendance(root){
               const date=makeDate(day), isToday=date===today;
               const label=new Date(date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
               const dateStyle=`position:sticky;left:0;${isToday?'background:var(--accent-soft);':'background:var(--surface);'}z-index:1;white-space:nowrap;`;
+              const dateUnlocked = state.attendanceUnlockedDates.has(date);
+              const dateLockHtml = isToday ? '' : `<button type="button" class="att-date-lock ${dateUnlocked?'is-unlocked':''}" data-att-date-lock="${date}" title="${dateUnlocked ? t('attDateLockedClickToLock') : t('attDateUnlockedClickToUnlock')}" aria-label="${dateUnlocked ? t('attDateLockedClickToLock') : t('attDateUnlockedClickToUnlock')}">${icon(dateUnlocked ? 'unlock' : 'lock')}</button>`;
               return `<tr class="${isToday?'att-today-row':''}" ${isToday?'data-att-today-row="true"':''} style="${isToday?'background:var(--accent-soft);':''}">
-                <td style="${dateStyle}"><strong>${label}</strong><div class="muted" style="font-size:11px;">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'})}</div></td>
+                <td style="${dateStyle}">
+                  <div class="att-date-cell ${dateUnlocked?'is-unlocked-date':''}">
+                    <div class="att-date-text"><strong>${label}</strong><div class="muted" style="font-size:11px;">${new Date(date+'T00:00:00').toLocaleDateString('en-US',{weekday:'short'})}</div></div>
+                    <div class="att-date-spacer"></div>
+                    ${dateLockHtml}
+                  </div>
+                </td>
                 ${staffList.map(staff=>{
                   const current = findAttendance(staff.id,date);
                   const currentMeta = attendanceStatusMeta(current?.status || 'pending');
@@ -60468,9 +60502,21 @@ function renderAttendance(root){
   root.querySelector('#attToday').addEventListener('click',()=>{state.attendanceDate=todayISO();state.attendanceFocusToday=true;render();});
   root.querySelector('#attMonthlySummary').addEventListener('click',openMonthlySummaryModal);
   root.querySelector('#attLockToggle').addEventListener('click',()=>{state.attendanceUnlocked=!state.attendanceUnlocked;render();});
+  root.querySelectorAll('[data-att-date-lock]').forEach(button=>button.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    const date=button.dataset.attDateLock;
+    if(state.attendanceUnlockedDates.has(date)){
+      state.attendanceUnlockedDates.delete(date);
+      toast(`${formatDateLong(date)}: ${t('attDateLockedNow')}`);
+    } else {
+      state.attendanceUnlockedDates.add(date);
+      toast(`${formatDateLong(date)}: ${t('attDateUnlockedNow')}`);
+    }
+    render();
+  }));
   root.querySelectorAll('[data-att-toggle]').forEach(button=>button.addEventListener('click',()=>{
     const staffId=button.dataset.attToggle, date=button.dataset.attDate;
-    if(!state.attendanceUnlocked && date!==todayISO()){toast('Only today can be changed while attendance is locked.',true);return;}
+    if(!isEditableDate(date)){toast(t('attLockedPastFuture'),true);return;}
     const order=['pending','present','absent','leave','holiday','weekly'];
     const current=button.dataset.attStatus||'pending';
     const next=order[(order.indexOf(current)+1)%order.length];
@@ -63098,7 +63144,11 @@ const TRANSLATIONS = {
     attUnlock: 'Unlock editing',
     attLock: 'Lock editing',
     attUnlockHint: 'Attendance is locked. You can only mark Present or Absent for today.',
-    attLockedPastFuture: 'Only today can be changed while attendance is locked.',
+    attLockedPastFuture: 'This date is locked. Hover the date and click the lock icon to unlock it for editing.',
+    attDateLockedClickToLock: 'Unlocked for editing — click to lock this date again',
+    attDateUnlockedClickToUnlock: 'This date is locked — click to unlock it for editing',
+    attDateLockedNow: 'locked again',
+    attDateUnlockedNow: 'unlocked for editing',
     attAbsentRow: 'Absent',
     noActiveStaffAtt: 'No active staff to summarize.',
     /* Expense */
@@ -63539,6 +63589,14 @@ const TRANSLATIONS = {
     attNoRecordsMonth: 'এই মাসে উপস্থিতির রেকর্ড নেই।',
     attPresentRow: 'উপস্থিত',
     attAbsentRow: 'অনুপস্থিত',
+    attUnlock: 'সম্পাদনা আনলক করুন',
+    attLock: 'সম্পাদনা লক করুন',
+    attUnlockHint: 'উপস্থিতি লক করা আছে। শুধু আজকের জন্য উপস্থিত বা অনুপস্থিত চিহ্নিত করা যাবে।',
+    attLockedPastFuture: 'এই তারিখটি লক করা আছে। তারিখের উপর মাউস নিয়ে গিয়ে লক আইকনে ক্লিক করে এটি সম্পাদনার জন্য আনলক করুন।',
+    attDateLockedClickToLock: 'সম্পাদনার জন্য আনলক করা আছে — এই তারিখটি আবার লক করতে ক্লিক করুন',
+    attDateUnlockedClickToUnlock: 'এই তারিখটি লক করা আছে — সম্পাদনার জন্য আনলক করতে ক্লিক করুন',
+    attDateLockedNow: 'আবার লক করা হয়েছে',
+    attDateUnlockedNow: 'সম্পাদনার জন্য আনলক করা হয়েছে',
     noActiveStaffAtt: 'সারসংক্ষেপের জন্য কোনো সক্রিয় কর্মী নেই।',
     /* Expense */
     tabPurchase: 'ব্যবসায়িক ক্রয়',
