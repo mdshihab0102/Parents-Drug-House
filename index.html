@@ -59165,9 +59165,10 @@ function attendanceMonthStats(staffId, ym){
   const leave = count('leave');
   const daily = Number(staff?.dailySalary) || 0;
   const basic = daily * totalDays;
-  const deduction = absent * daily;
+  const unpaidDays = absent + leave + holiday + weekly;
+  const deduction = unpaidDays * daily;
   const net = Math.max(0, basic - deduction);
-  return {staff,totalDays,workingDays,present,absent,leave,holiday,weekly,basic,daily,deduction,net,records};
+  return {staff,totalDays,workingDays,present,absent,leave,holiday,weekly,unpaidDays,basic,daily,deduction,net,records};
 }
 function syncSalaryExpense(attRec){
   let exp = DB.expenses.find(e => e.source === 'attendance' && e.staffId === attRec.staffId && e.date === attRec.date);
