@@ -58998,13 +58998,25 @@ async function loadAll(){
     DB.creditors = creditors || [];
     DB.settings = settings || null;
     DB.aiChat = aiChat || [];
+
+    // If this browser already has an AI key cached and the remote settings row
+    // predates AI settings (or has no AI key yet), keep the key instead of
+    // making the user enter it again. The next cache/save will sync it.
+    const cachedSettings = readCache('settings', null);
+    const cachedAiKey = String(cachedSettings && cachedSettings.ai && cachedSettings.ai.apiKey || '').trim();
+    const remoteAiKey = String(DB.settings && DB.settings.ai && DB.settings.ai.apiKey || '').trim();
+    if (DB.settings && !remoteAiKey && cachedAiKey){
+      DB.settings.ai = Object.assign(defaultAiSettings(), DB.settings.ai || {}, { apiKey: cachedAiKey });
+    }
     if (!DB.settings){
       DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
       await saveKey('settings');
     }
     normaliseLoadedData();
-    if (DB.settings && DB.settings.ai && /^AQ\./.test(String(DB.settings.ai.apiKey || ''))){
-      DB.settings.ai.apiKey = '';
+    // AI settings are stored inside the shared Supabase settings row.
+    // Do not silently clear API keys during startup: a valid key may use
+    // different prefixes depending on the provider/version.
+    if (cachedAiKey && !remoteAiKey){
       await saveKey('settings');
     }
     cacheAll();
@@ -59027,10 +59039,8 @@ function loadAllFromLocalCache(){
   if (DB.staff === null) DB.staff = [];
   if (DB.settings === null) DB.settings = { businessName:'Pharmacy Records', currency:'৳', adminPassword: DEFAULT_ADMIN_PASSWORD, theme:'system', accent:'emerald' };
   normaliseLoadedData();
-  if (DB.settings && DB.settings.ai && /^AQ\./.test(String(DB.settings.ai.apiKey || ''))){
-    DB.settings.ai.apiKey = '';
-    writeCache('settings');
-  }
+  // Preserve the locally cached AI key when Supabase is temporarily unavailable.
+  // It will be re-synced to Supabase on the next successful save.
 }
 function normaliseLoadedData(){
   if (!Array.isArray(DB.staff)) DB.staff = [];
@@ -59069,6 +59079,21 @@ async function saveKey(name){
         id:'singleton', app_instance_id: SUPABASE_APP_INSTANCE_ID, data: DB.settings
       }, { onConflict:'app_instance_id,id' });
       if (error) throw error;
+
+      // Verify that the value actually made it to the shared row. This prevents
+      // a false 'saved' state when Supabase/RLS accepts the request but the
+      // browser is not reading the same settings row on the next load.
+      const { data: verified, error: verifyError } = await supabaseClient
+        .from(SUPABASE_TABLES.settings)
+        .select('data')
+        .eq('app_instance_id', SUPABASE_APP_INSTANCE_ID)
+        .eq('id', 'singleton')
+        .maybeSingle();
+      if (verifyError) throw verifyError;
+      if (!verified || !verified.data) throw new Error('Supabase did not return the saved settings row. Check the settings table SELECT policy.');
+      const savedAiKey = String(verified.data.ai && verified.data.ai.apiKey || '');
+      const expectedAiKey = String(DB.settings.ai && DB.settings.ai.apiKey || '');
+      if (savedAiKey !== expectedAiKey) throw new Error('AI API key was not persisted to the shared settings row. Check Supabase INSERT/UPDATE/SELECT policies for the settings table.');
     } else if (SUPABASE_LIST_KEYS.includes(name)){
       const rows = (DB[name] || []).map(r => toRemoteRow(name, normalizeRecord(name, r)));
       const ids = rows.map(r => r.id);
@@ -62133,11 +62158,13 @@ function attachMedicineAutocomplete(input, listEl, onPick){
 /* =========================================================
    AI ASSISTANT  (Google Gemini)
    ---------------------------------------------------------
-   The API key is typed by the operator in Admin > AI Assistant and
-   is kept only in this browser's localStorage. It is sent to Google
-   and nowhere else. This page is a static file, not a server: anyone
-   with access to this browser profile can read the stored key, so
-   use a key you are willing to rotate.
+   The API key is typed by the operator in Admin > AI Assistant.
+   AI settings are synced through the existing Supabase `settings` row,
+   with localStorage retained as a temporary offline/cache fallback.
+   The key is sent directly to Google for Gemini requests. Because this
+   is a browser app, anyone with access to the browser/profile or the
+   Supabase data covered by its policies may be able to access it; use
+   a key you are willing to rotate.
    CORS on generativelanguage.googleapis.com is open for browser
    callers, so requests go straight from this page to Google.
    ========================================================= */
