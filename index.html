@@ -960,9 +960,65 @@
     box-shadow:inset 0 1px 0 color-mix(in srgb,var(--accent) 32%,transparent),inset 0 -1px 0 color-mix(in srgb,var(--accent) 32%,transparent);
   }
   .attendance-payroll tr.att-staff-selected .staff-cell{background:var(--accent-soft-2) !important;}
+  /* Daily attendance staff header — use the active application theme color */
+  .attendance-panel .attendance-table thead th{
+    height:58px;
+    padding:11px 12px;
+    background:var(--accent) !important;
+    color:var(--on-accent, #fff) !important;
+    font-size:11px;
+    font-weight:850;
+    letter-spacing:.045em;
+    text-transform:uppercase;
+    border-bottom:3px solid var(--accent-dark);
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  .attendance-panel .attendance-table thead th:first-child{
+    background:var(--accent-dark) !important;
+    color:var(--on-accent, #fff) !important;
+    font-size:11px;
+    letter-spacing:.07em;
+    text-align:left;
+    box-shadow:8px 0 16px -16px rgba(15,23,42,.55);
+  }
+  .attendance-panel .attendance-table thead th[data-att-staff-col]{
+    position:relative;
+    min-width:145px;
+    background:var(--accent) !important;
+    color:var(--on-accent, #fff) !important;
+    font-size:12px;
+    font-weight:850;
+    letter-spacing:.01em;
+    text-transform:none;
+    text-shadow:0 1px 1px color-mix(in srgb,var(--accent-dark) 45%,transparent);
+    border-left:1px solid color-mix(in srgb,var(--on-accent) 24%,transparent);
+    transition:background var(--t-fast),box-shadow var(--t-fast);
+  }
+  .attendance-panel .attendance-table thead th[data-att-staff-col]::after{
+    content:"";
+    position:absolute;
+    left:10px;right:10px;bottom:-3px;height:4px;
+    border-radius:99px 99px 0 0;
+    background:var(--on-accent, #fff);
+    opacity:.85;
+  }
+  .attendance-panel .attendance-table thead th[data-att-staff-col]:hover{
+    background:var(--accent-dark) !important;
+    color:var(--on-accent, #fff) !important;
+    box-shadow:inset 0 -4px 0 var(--on-accent, #fff);
+  }
+  .attendance-panel .attendance-table thead th[data-att-staff-col]:hover::after{
+    opacity:1;
+  }
   .attendance-panel .attendance-table th.att-staff-selected{
-    background:var(--accent-soft-2) !important;color:var(--accent-text);
-    box-shadow:inset 0 -2px 0 var(--accent);
+    background:var(--accent-dark) !important;
+    color:var(--on-accent, #fff) !important;
+    box-shadow:inset 0 -4px 0 var(--on-accent, #fff), inset 1px 0 0 color-mix(in srgb,var(--on-accent) 28%,transparent), inset -1px 0 0 color-mix(in srgb,var(--on-accent) 28%,transparent);
+  }
+  .attendance-panel .attendance-table th.att-staff-selected::after{
+    background:var(--on-accent, #fff);
+    opacity:1;
   }
   .attendance-panel .attendance-table td.att-staff-selected{
     background:color-mix(in srgb,var(--accent) 9%,var(--surface)) !important;
@@ -59044,6 +59100,10 @@ function loadAllFromLocalCache(){
 }
 function normaliseLoadedData(){
   if (!Array.isArray(DB.staff)) DB.staff = [];
+  DB.staff.forEach(s => {
+    if (!Array.isArray(s.salaryHistory)) s.salaryHistory = [];
+    if (!(Number(s.salaryBaseline) > 0)) s.salaryBaseline = Number(s.dailySalary) || 0;
+  });
   if (!Array.isArray(DB.attendance)) DB.attendance = [];
   if (!Array.isArray(DB.sales)) DB.sales = [];
   if (!Array.isArray(DB.expenses)) DB.expenses = [];
@@ -59304,10 +59364,29 @@ function addStaff(name, keyword, dailySalary){
   if (!clean) return { ok:false, error:'A sale keyword is required.' };
   if (DB.staff.some(s => s.active && s.keyword.toUpperCase() === clean)) return { ok:false, error:'That keyword is already used by an active staff member.' };
   if (!(Number(dailySalary) > 0)) return { ok:false, error:'Daily salary must be a positive number.' };
-  const s = { id: uid('st'), name:name.trim(), keyword:clean, dailySalary:Number(dailySalary), active:true };
+  const s = { id: uid('st'), name:name.trim(), keyword:clean, dailySalary:Number(dailySalary), salaryBaseline:Number(dailySalary), salaryHistory:[], active:true };
   DB.staff.push(s);
   saveKey('staff');
   return { ok:true, staff:s };
+}
+function ensureSalaryHistory(staff){
+  if (!staff) return;
+  if (!Array.isArray(staff.salaryHistory)) staff.salaryHistory = [];
+}
+function salaryForDate(staff, date){
+  if (!staff) return 0;
+  ensureSalaryHistory(staff);
+  const target = String(date || '9999-12-31');
+  let amount = Number(staff.salaryBaseline);
+  if (!(amount > 0)) amount = Number(staff.dailySalary) || 0;
+  const history = staff.salaryHistory
+    .filter(x => x && x.effectiveFrom && Number(x.dailySalary) > 0)
+    .slice().sort((a,b)=> String(a.effectiveFrom).localeCompare(String(b.effectiveFrom)));
+  for (const h of history){
+    if (String(h.effectiveFrom) <= target) amount = Number(h.dailySalary);
+    else break;
+  }
+  return Number(amount) || 0;
 }
 function updateStaff(id, patch){
   const s = getStaff(id);
@@ -59320,6 +59399,20 @@ function updateStaff(id, patch){
   }
   if (patch.name !== undefined && !patch.name.trim()) return { ok:false, error:'Staff name is required.' };
   if (patch.dailySalary !== undefined && !(Number(patch.dailySalary) > 0)) return { ok:false, error:'Daily salary must be a positive number.' };
+  const oldSalary = Number(s.dailySalary) || 0;
+  const newSalary = patch.dailySalary !== undefined ? Number(patch.dailySalary) : oldSalary;
+  const salaryChanged = patch.dailySalary !== undefined && newSalary !== oldSalary;
+  if (salaryChanged){
+    const effectiveFrom = patch.salaryEffectiveFrom || isoDate(new Date());
+    ensureSalaryHistory(s);
+    if (!s.salaryHistory.length && !(Number(s.salaryBaseline) > 0)) s.salaryBaseline = oldSalary;
+    const existing = s.salaryHistory.find(h => String(h.effectiveFrom) === String(effectiveFrom));
+    if (existing) existing.dailySalary = newSalary;
+    else s.salaryHistory.push({ effectiveFrom:String(effectiveFrom), dailySalary:newSalary });
+    s.salaryHistory.sort((a,b)=> String(a.effectiveFrom).localeCompare(String(b.effectiveFrom)));
+    patch.dailySalary = newSalary;
+  }
+  delete patch.salaryEffectiveFrom;
   Object.assign(s, patch);
   saveKey('staff');
   return { ok:true };
@@ -59384,7 +59477,7 @@ function setAttendance(staffId, date, status){
     }
     return;
   }
-  const salary = status === 'present' ? Number(staff.dailySalary) || 0 : 0;
+  const salary = status === 'present' ? salaryForDate(staff, date) : 0;
   if (rec){
     rec.status = status;
     rec.salaryGenerated = salary;
@@ -59410,9 +59503,16 @@ function attendanceMonthStats(staffId, ym){
   const absent = count('absent');
   const leave = count('leave');
   const daily = Number(staff?.dailySalary) || 0;
-  const basic = daily * totalDays;
+  let basic = 0;
+  let deduction = 0;
+  for (let day = 1; day <= totalDays; day++){
+    const date = `${ym}-${String(day).padStart(2,'0')}`;
+    const daySalary = salaryForDate(staff, date);
+    basic += daySalary;
+    const rec = records.find(r => r.date === date);
+    if (rec && ['absent','leave','holiday','weekly'].includes(rec.status)) deduction += daySalary;
+  }
   const unpaidDays = absent + leave + holiday + weekly;
-  const deduction = unpaidDays * daily;
   const net = Math.max(0, basic - deduction);
   return {staff,totalDays,workingDays,present,absent,leave,holiday,weekly,unpaidDays,basic,daily,deduction,net,records};
 }
@@ -60694,7 +60794,7 @@ function renderAttendance(root){
         <table class="attendance-table" style="min-width:${Math.max(760, 190 + staffList.length * 145)}px;">
           <thead><tr>
             <th class="attendance-sticky-head" style="position:sticky;left:0;background:var(--surface-2);z-index:12;">Date</th>
-            ${staffList.map(s=>`<th class="attendance-sticky-head ${selectedStaffId===s.id?'att-staff-selected':''}" data-att-staff-col="${s.id}" style="text-align:center;">${escapeHtml(s.name)}</th>`).join('')}
+            ${staffList.map(s=>`<th class="attendance-sticky-head ${selectedStaffId===s.id?'att-staff-selected':''}" data-att-staff-col="${s.id}" style="text-align:center;" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</th>`).join('')}
           </tr></thead>
           <tbody>
             ${Array.from({length:daysInMonth},(_,i)=>i+1).map(day=>{
@@ -61829,7 +61929,9 @@ function openEditStaffModal(id){
         <div class="field"><label for="esName">${t('adminNameLabel')}</label><input id="esName" value="${escapeHtml(s.name)}"></div>
         <div class="field"><label for="esKeyword">${t('adminKeywordLabel')}</label><input id="esKeyword" maxlength="3" value="${escapeHtml(s.keyword)}" style="text-transform:uppercase;"></div>
         <div class="field"><label for="esSalary">${t('adminSalaryLabel')}</label><input id="esSalary" type="number" min="0" step="0.01" value="${s.dailySalary}"></div>
+        <div class="field"><label for="esSalaryEffective">${t('adminSalaryEffectiveLabel')}</label><input id="esSalaryEffective" type="date" value="${isoDate(new Date())}"></div>
       </div>
+      <div class="muted" style="margin-top:8px;font-size:12px;">${t('adminSalaryEffectiveHint')}</div>
       <div class="field-error" id="esErr"></div>
     `,
     footHtml:`<button class="btn" data-close>${t('cancelBtn')}</button><button class="btn primary" id="esSave">${t('saveBtn')}</button>`,
@@ -61838,7 +61940,8 @@ function openEditStaffModal(id){
         const res = updateStaff(id, {
           name: modalEl.querySelector('#esName').value,
           keyword: modalEl.querySelector('#esKeyword').value,
-          dailySalary: modalEl.querySelector('#esSalary').value
+          dailySalary: modalEl.querySelector('#esSalary').value,
+          salaryEffectiveFrom: modalEl.querySelector('#esSalaryEffective').value
         });
         if (!res.ok){ modalEl.querySelector('#esErr').textContent = res.error; return; }
         closeModal(); render(); toast(t('adminStaffUpdated'));
@@ -63631,6 +63734,8 @@ const TRANSLATIONS = {
     adminNameLabel: 'Name',
     adminKeywordLabel: 'Sale keyword',
     adminSalaryLabel: 'Daily salary',
+    adminSalaryEffectiveLabel: 'Salary effective from',
+    adminSalaryEffectiveHint: 'Changing the salary will not change earlier months. The new salary applies from this date.',
     adminStaffAdded: 'Staff member added.',
     adminStaffUpdated: 'Staff member updated.',
     adminStaffDeactivated: '{name} deactivated.',
@@ -64078,6 +64183,8 @@ const TRANSLATIONS = {
     adminNameLabel: 'নাম',
     adminKeywordLabel: 'বিক্রয় কীওয়ার্ড',
     adminSalaryLabel: 'দৈনিক বেতন',
+    adminSalaryEffectiveLabel: 'বেতন কার্যকর হবে',
+    adminSalaryEffectiveHint: 'বেতন পরিবর্তন করলে আগের মাসের বেতন পরিবর্তন হবে না। নতুন বেতন এই তারিখ থেকে কার্যকর হবে।',
     adminStaffAdded: 'কর্মী যোগ হয়েছে।',
     adminStaffUpdated: 'কর্মীর তথ্য আপডেট হয়েছে।',
     adminStaffDeactivated: '{name} নিষ্ক্রিয় হয়েছে।',
